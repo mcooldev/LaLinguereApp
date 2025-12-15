@@ -12,6 +12,9 @@ class NewsService {
 
   static final NewsService instance = NewsService._();
 
+  final client = http.Client();
+
+
   /// News variables
   final authority = Config.instance.baseUrl;
   final unencodedPath = "/wp-json/wp/v2/actualite";
@@ -22,7 +25,7 @@ class NewsService {
   Future<String> fetchMedia(int mediaId) async {
     try {
       final uri = Uri.https(authority, '/wp-json/wp/v2/media/$mediaId');
-      final response = await http.get(uri);
+      final response = await client.get(uri);
       if (response.statusCode == 200) {
         final decodedData = jsonDecode(response.body);
         return decodedData['source_url'];
@@ -39,7 +42,7 @@ class NewsService {
     try {
       //
       final uri = Uri.https(authority, unencodedPath, queryParameters);
-      final response = await http.get(uri);
+      final response = await client.get(uri);
       //
       if (response.statusCode == 200) {
         final List<dynamic> decodedData = jsonDecode(response.body);

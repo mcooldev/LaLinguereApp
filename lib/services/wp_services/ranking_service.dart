@@ -11,6 +11,9 @@ class RankingService {
 
   static final RankingService instance = RankingService._();
 
+  final client = http.Client();
+
+
   /// Ranking variables
   final authority = Config.instance.baseUrl;
   final unencodedPath = "/wp-json/wp/v2/classement";
@@ -26,7 +29,7 @@ class RankingService {
     //
     try {
       final uri = Uri.https(authority, unencodedPath, queryParameters);
-      final response = await http.get(uri);
+      final response = await client.get(uri);
       //
       if (response.statusCode == 200) {
         final List<dynamic> decodedData = jsonDecode(response.body);

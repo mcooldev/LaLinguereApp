@@ -8,6 +8,7 @@ import 'package:la_linguere/pages/onBoarding/splash.dart';
 import 'package:la_linguere/pages/otherPages/home.dart';
 import 'package:la_linguere/providers/navigation_provider.dart';
 import 'package:la_linguere/providers/news_provider.dart';
+import 'package:la_linguere/providers/next_match_provider.dart';
 import 'package:la_linguere/providers/on_boarding_provider.dart';
 import 'package:la_linguere/providers/ranking_provider.dart';
 import 'package:la_linguere/utils/theme/theme_data.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         //
         ChangeNotifierProvider(create: (_) => NewsProvider()),
         ChangeNotifierProvider(create: (_) => RankingProvider()),
+        ChangeNotifierProvider(create: (_) => NextMatchProvider()),
         //
       ],
       child: MaterialApp(
