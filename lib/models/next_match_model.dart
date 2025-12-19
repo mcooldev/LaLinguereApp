@@ -19,3 +19,29 @@ class NextMatchModel {
       teamLogoAway,
       teamNameAway;
 }
+
+class NextMatchWomanModel extends NextMatchModel {
+  NextMatchWomanModel({
+    required super.competitionLogo,
+    required super.competitionName,
+    required super.day,
+    required super.matchTime,
+    required super.teamLogoHome,
+    required super.teamNameHome,
+    required super.teamLogoAway,
+    required super.teamNameAway,
+  });
+}
+
+class NextMatchU15Model extends NextMatchModel {
+  NextMatchU15Model({
+    required super.competitionLogo,
+    required super.competitionName,
+    required super.day,
+    required super.matchTime,
+    required super.teamLogoHome,
+    required super.teamNameHome,
+    required super.teamLogoAway,
+    required super.teamNameAway,
+  });
+}

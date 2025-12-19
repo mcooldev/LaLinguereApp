@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:la_linguere/models/news_model.dart';
 import 'package:la_linguere/pages/otherPages/foundation.dart';
 import 'package:la_linguere/pages/otherPages/news_details.dart';
+import 'package:la_linguere/providers/foundation_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +30,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     ///
     WidgetsBinding.instance.addPostFrameCallback((_) {
       //
@@ -47,7 +49,15 @@ class _HomeState extends State<Home> {
       );
       nextMatchProvider.fetchNextMatch();
       //
+      final navProvider = Provider.of<NavigationProvider>(
+        context,
+        listen: false,
+      );
+      navProvider.currentIndex = 0;
+      //
+      context.read<FoundationProvider>().teamPageIndex = 0;
     });
+
     ///
   }
 
@@ -214,69 +224,71 @@ class _HomeState extends State<Home> {
                 const SizedBox(height: 8),
 
                 /// Next match widget
-                Consumer<NextMatchProvider>(builder: (_,prov,_){
-                  return NextMatchWidget(
-                    theme: theme,
-                    nextMatch: prov.nextMatch,
-                    isLoading: prov.isLoading,
-                    onTapLiveWatch: () {
-                      // todo: go to Youtube channel for live watching
-                      navProvider.showBottomSheet(
-                        context: context,
-                        onTapBtn: () {
-                          navProvider.goToUrl(
-                            url:
-                            "https://www.youtube.com/@ascelinguere8675/featured",
-                          );
-                          //
-                          Navigator.pop(context);
-                        },
-                        btnText: 'Continuer vers la chaine Youtube',
-                        title: "Live Match  📺  🎥",
-                        bodyContent:
-                        "Vous allez être redirigé vers notre chaine Youtube pour suivre le match.",
-                        widget: Container(
-                          height: 60,
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 15,
-                          ),
-                          decoration: BoxDecoration(
-                            color: lightBg,
-                            borderRadius: BorderRadius.circular(90),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // logo linguere
-                              Flexible(
-                                child: Image.asset(
-                                  'assets/ll_logo_h.png',
-                                  fit: BoxFit.cover,
+                Consumer<NextMatchProvider>(
+                  builder: (_, prov, _) {
+                    return NextMatchWidget(
+                      theme: theme,
+                      nextMatch: prov.nextMatch,
+                      isLoading: prov.isLoading,
+                      onTapLiveWatch: () {
+                        // todo: go to Youtube channel for live watching
+                        navProvider.showBottomSheet(
+                          context: context,
+                          onTapBtn: () {
+                            navProvider.goToUrl(
+                              url:
+                                  "https://www.youtube.com/@ascelinguere8675/featured",
+                            );
+                            //
+                            Navigator.pop(context);
+                          },
+                          btnText: 'Continuer vers la chaine Youtube',
+                          title: "Live Match  📺  🎥",
+                          bodyContent:
+                              "Vous allez être redirigé vers notre chaine Youtube pour suivre le match.",
+                          widget: Container(
+                            height: 60,
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 15,
+                            ),
+                            decoration: BoxDecoration(
+                              color: lightBg,
+                              borderRadius: BorderRadius.circular(90),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // logo linguere
+                                Flexible(
+                                  child: Image.asset(
+                                    'assets/ll_logo_h.png',
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 12),
+                                const SizedBox(width: 12),
 
-                              // arrow
-                              SvgPicture.asset(
-                                'assets/arrow_right_livewatch.svg',
-                              ),
-                              const SizedBox(width: 12),
+                                // arrow
+                                SvgPicture.asset(
+                                  'assets/arrow_right_livewatch.svg',
+                                ),
+                                const SizedBox(width: 12),
 
-                              // logo diotali
-                              SvgPicture.asset('assets/logo_youtube.svg'),
-                            ],
+                                // logo diotali
+                                SvgPicture.asset('assets/logo_youtube.svg'),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    onTapSeeOtherMatch: () {
-                      // todo: go to other match page
-                    },
-                  );
-                }),
+                        );
+                      },
+                      onTapSeeOtherMatch: () {
+                        // todo: go to other match page
+                      },
+                    );
+                  },
+                ),
                 const SizedBox(height: 24),
 
                 /// Ranking

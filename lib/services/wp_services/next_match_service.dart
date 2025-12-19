@@ -67,27 +67,32 @@ class NextMatchService {
           //
           final String competitionName = acfData['nom_de_la_competition'];
           final String day = acfData['journee'];
-          final String matchTimeString = acfData['heure_du_match'];
-          final parts = matchTimeString.split(':');
-          final hours = int.parse(parts[0]);
-          final minutes = int.parse(parts[1]);
+          final String matchTimeString =
+              acfData['heure_du_match'] as String? ?? "00:00";
+          int hours = 0;
+          int minutes = 0;
+          if (matchTimeString.contains(":")) {
+            final parts = matchTimeString.split(':');
+            hours = int.tryParse(parts[0]) ?? 0;
+            if (parts.length > 2) {
+              minutes = int.tryParse(parts[1]) ?? 0;
+            }
+          }
           final String matchTime =
               '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
           //
           final teamLogoHomeInt = acfData['logo_equipe_domicile'];
           final teamLogoAwayInt = acfData['logo_equipe_exterieur'];
           final logos = await Future.wait([
-          fetchMedia(teamLogoHomeInt),
-            fetchMedia(teamLogoAwayInt)
+            fetchMedia(teamLogoHomeInt),
+            fetchMedia(teamLogoAwayInt),
           ]);
           final String teamLogoHome = logos[0];
           final String teamLogoAway = logos[1];
           //
           final String teamNameHome = acfData['nom_equipe_domicile'];
-
           //
           final String teamNameAway = acfData['nom_equipe_exterieur'];
-
           //
           final nextMatchToAdd = NextMatchModel(
             competitionLogo: competitionLogo,

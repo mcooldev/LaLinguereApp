@@ -1,0 +1,130 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:infinite_carousel/infinite_carousel.dart';
+import 'package:la_linguere/models/contact_model.dart';
+import 'package:la_linguere/models/next_match_model.dart';
+import 'package:la_linguere/models/ranking_model.dart';
+import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/history_view.dart';
+import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/team_u15_view.dart';
+import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/team_woman_view.dart';
+
+class FoundationProvider with ChangeNotifier {
+  final List<Widget> _teamPages = [
+    const HistoryView(),
+    const TeamWomanView(),
+    const TeamU15View(),
+  ];
+
+  List<Widget> get teamPages => _teamPages;
+
+  final List<String> _teamPageTitles = ['Histoire', 'Féminine', 'U15'];
+
+  List<String> get teamPageTitles => _teamPageTitles;
+
+  int _teamPageIndex = 0;
+
+  int get teamPageIndex => _teamPageIndex;
+
+  set teamPageIndex(int index) {
+    _teamPageIndex = index;
+    notifyListeners();
+  }
+
+  /// Logo partners
+  final List<String> _logoPartners = [
+    "assets/logo_partners/amsa.png",
+    "assets/logo_partners/com_st_louis.png",
+    "assets/logo_partners/invictus.png",
+    "assets/logo_partners/leral_tv.png",
+    "assets/logo_partners/neptune.png",
+    "assets/logo_partners/o_royal.png",
+    "assets/logo_partners/ohgarage.png",
+    "assets/logo_partners/outarde.png",
+    "assets/logo_partners/supdeco.png",
+  ];
+
+  List<String> get logoPartners => _logoPartners;
+
+  final InfiniteScrollController scrollController = InfiniteScrollController();
+
+  bool _isAnimating = false;
+
+  bool get isAnimating => _isAnimating;
+
+  void startLoop() {
+    if (!_isAnimating) {
+      _isAnimating = true;
+      loop();
+    }
+  }
+
+  void loop() async {
+    if (scrollController.hasClients) {
+      await scrollController.nextItem(
+        duration: const Duration(seconds: 2),
+        curve: Curves.linear,
+      );
+      loop();
+    } else {
+      _isAnimating = false;
+    }
+  }
+
+  /// Info contact
+  final List<ContactModel> _infoContact = [
+    ContactModel(label: 'Adresse',
+        content: 'Linguère, Saint-Louis',
+        iconData: CupertinoIcons.map),
+    ContactModel(label: 'Adresse mail',
+        content: 'infos@lalinguere.com',
+        iconData: CupertinoIcons.at),
+    ContactModel(label: 'Téléphone',
+        content: '+221 77 200 69 87',
+        iconData: CupertinoIcons.phone),
+  ];
+
+  List<ContactModel> get infoContact => _infoContact;
+
+
+  /// Next match woman
+  final NextMatchWomanModel _nextMatchWoman = NextMatchWomanModel(
+      competitionLogo: "assets/placeholder_image.png",
+      competitionName: "Ligue 1",
+      day: "0",
+      matchTime: "00:00",
+      teamLogoHome: "",
+      teamNameHome: "Equipe dom.",
+      teamLogoAway: "",
+      teamNameAway: "Equipe ext.");
+
+  NextMatchWomanModel get nextMatchWoman => _nextMatchWoman;
+
+  final RankingModel rankingWoman = RankingModel(
+      place: 00, points: 00, playedMatch: 00);
+
+
+  /// Next match u15
+  final NextMatchU15Model _nextMatchU15 = NextMatchU15Model(
+      competitionLogo: "assets/placeholder_image.png",
+      competitionName: "Ligue 1",
+      day: "0",
+      matchTime: "00:00",
+      teamLogoHome: "",
+      teamNameHome: "Equipe dom.",
+      teamLogoAway: "",
+      teamNameAway: "Equipe ext.");
+
+  NextMatchU15Model get nextMatchU15 => _nextMatchU15;
+
+  final RankingModel rankingU15 = RankingModel(
+      place: 00, points: 00, playedMatch: 00);
+
+
+  /// Disposer
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    scrollController.dispose();
+    super.dispose();
+  }
+}

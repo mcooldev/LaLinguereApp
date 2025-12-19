@@ -28,7 +28,7 @@ class TeamNextMatchWidget extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(90),
               image: DecorationImage(
-                image: teamLogo!.isNotEmpty && teamLogo != null
+                image: (teamLogo != null && teamLogo!.startsWith('http'))
                     ? NetworkImage(teamLogo!)
                     : const AssetImage('assets/placeholder_image.png')
                           as ImageProvider,

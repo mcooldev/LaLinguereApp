@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/membership_page.dart';
 import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/news_page.dart';
+import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/president_page.dart';
+import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/team_page.dart';
 import 'package:la_linguere/providers/navigation_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -84,8 +86,8 @@ class _FoundationState extends State<Foundation> {
               children: [
                 NewsPage(),
                 MembershipPage(),
-                Center(child: Text('Team')),
-                Center(child: Text('President')),
+                TeamPage(),
+                PresidentPage()
               ],
             ),
 

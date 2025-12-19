@@ -23,7 +23,7 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       appBar: AppBar(),
 
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +135,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   GestureDetector(
                     onTap: () {
                       // todo: Go create account
-                      Navigator.pushReplacementNamed(context, "/signup");
+                      Navigator.pushReplacementNamed(context, "/forgetPassword");
                       //
                     },
                     child: Row(
@@ -143,7 +143,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       children: [
                         Text.rich(
                           TextSpan(
-                            text: 'Pas le bon nuléro ? ',
+                            text: 'Pas le bon numéro ? ',
                             style: theme.textTheme.labelLarge!.copyWith(
                               color: bodyText,
                             ),

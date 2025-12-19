@@ -12,8 +12,8 @@ class NextMatchWidget extends StatefulWidget {
     required this.theme,
     required this.isLoading,
     required this.nextMatch,
-    required this.onTapLiveWatch,
-    required this.onTapSeeOtherMatch,
+    this.onTapLiveWatch,
+    this.onTapSeeOtherMatch,
   });
 
   final ThemeData theme;
@@ -21,8 +21,8 @@ class NextMatchWidget extends StatefulWidget {
 
   final bool isLoading;
 
-  final void Function() onTapLiveWatch;
-  final void Function() onTapSeeOtherMatch;
+  final void Function()? onTapLiveWatch;
+  final void Function()? onTapSeeOtherMatch;
 
   @override
   State<NextMatchWidget> createState() => _NextMatchWidgetState();
@@ -96,7 +96,8 @@ class _NextMatchWidgetState extends State<NextMatchWidget> {
                       child: TeamNextMatchWidget(
                         theme: widget.theme,
                         teamLogo: widget.nextMatch?.teamLogoHome ?? '',
-                        teamName: widget.nextMatch?.teamNameHome ?? 'Equipe dom.',
+                        teamName:
+                            widget.nextMatch?.teamNameHome ?? 'Equipe dom.',
                         isHome: true,
                       ),
                     ),
@@ -125,11 +126,12 @@ class _NextMatchWidgetState extends State<NextMatchWidget> {
                             ),
                             child: Text(
                               widget.nextMatch?.matchTime ?? '-N/C-',
-                              style: widget.theme.textTheme.labelSmall!.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 12,
-                              ),
+                              style: widget.theme.textTheme.labelSmall!
+                                  .copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12,
+                                  ),
                             ),
                           ),
                         ],
@@ -142,7 +144,8 @@ class _NextMatchWidgetState extends State<NextMatchWidget> {
                       child: TeamNextMatchWidget(
                         theme: widget.theme,
                         teamLogo: widget.nextMatch?.teamLogoAway ?? '',
-                        teamName: widget.nextMatch?.teamNameAway ?? 'Equipe ext.',
+                        teamName:
+                            widget.nextMatch?.teamNameAway ?? 'Equipe ext.',
                         isHome: false,
                       ),
                     ),
@@ -159,14 +162,18 @@ class _NextMatchWidgetState extends State<NextMatchWidget> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(90),
-                    side: const BorderSide(width: 1, color: Colors.white24),
+                    side: const BorderSide(
+                      width: 1,
+                      color: Colors.white24,
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         'Suivre le match',
-                        style: widget.theme.textTheme.labelLarge!.copyWith(
+                        style: widget.theme.textTheme.labelLarge!
+                            .copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -177,6 +184,7 @@ class _NextMatchWidgetState extends State<NextMatchWidget> {
                   ),
                 ),
                 const SizedBox(height: 8),
+                // See other match btn
                 MaterialButton(
                   onPressed: widget.onTapSeeOtherMatch,
                   color: Colors.transparent,
@@ -184,14 +192,18 @@ class _NextMatchWidgetState extends State<NextMatchWidget> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(90),
-                    side: const BorderSide(width: 1, color: Colors.white24),
+                    side: const BorderSide(
+                      width: 1,
+                      color: Colors.white24,
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         'Voir les autres matchs',
-                        style: widget.theme.textTheme.labelLarge!.copyWith(
+                        style: widget.theme.textTheme.labelLarge!
+                            .copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
