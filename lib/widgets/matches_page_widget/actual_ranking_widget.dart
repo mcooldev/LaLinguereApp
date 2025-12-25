@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:la_linguere/models/all_rank_model.dart';
+import 'package:la_linguere/providers/all_rank_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../providers/ranking_provider.dart';
 import '../../utils/constants/app_colors.dart';
@@ -11,6 +14,21 @@ class ActualRankingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ///
+    final standingProvider = Provider.of<AllRankProvider>(context);
+    final linguereStanding = standingProvider.standingList.firstWhere(
+      (s) => s.teamName.toString().contains("La Linguère"),
+      orElse: () => AllRankModel(
+        teamName: '',
+        teamLogo: '',
+        rank: 0,
+        goalsDiff: 0,
+        points: 0,
+        playedMatch: 0,
+      ),
+    );
+
+    ///
     return Column(
       children: [
         SizedBox(
@@ -37,7 +55,7 @@ class ActualRankingWidget extends StatelessWidget {
             ),
             children: [
               TextSpan(
-                text: "${rankingProvider.ranking?.place ?? '00'}e",
+                text: "${linguereStanding.rank}e",
                 style: GoogleFonts.manrope(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
