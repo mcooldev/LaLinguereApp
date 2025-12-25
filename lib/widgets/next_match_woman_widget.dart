@@ -1,10 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/models/next_match_model.dart';
 import 'package:la_linguere/widgets/team_next_match_widget.dart';
 
 import '../utils/constants/app_colors.dart';
 
-class NextMatchWomanWidget extends StatefulWidget {
+class NextMatchWomanWidget extends StatelessWidget {
   const NextMatchWomanWidget({
     super.key,
     required this.theme,
@@ -18,11 +20,6 @@ class NextMatchWomanWidget extends StatefulWidget {
   final bool isLoading;
 
   @override
-  State<NextMatchWomanWidget> createState() => _NextMatchWomanWidgetState();
-}
-
-class _NextMatchWomanWidgetState extends State<NextMatchWomanWidget> {
-  @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -34,7 +31,7 @@ class _NextMatchWomanWidgetState extends State<NextMatchWomanWidget> {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: widget.isLoading
+      child: isLoading
           ? const Center(
               child: CircularProgressIndicator.adaptive(
                 backgroundColor: Colors.white,
@@ -46,23 +43,39 @@ class _NextMatchWomanWidgetState extends State<NextMatchWomanWidget> {
                 Row(
                   children: [
                     /// competition logo
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundImage:
-                          (widget.nextMatchWoman?.competitionLogo != null &&
-                              widget.nextMatchWoman!.competitionLogo.startsWith('http'))
-                          ? NetworkImage(widget.nextMatchWoman!.competitionLogo)
-                          : const AssetImage('assets/placeholder_image.png')
-                                as ImageProvider,
-                      backgroundColor: Colors.white,
+                    Container(
+                      width: 50,
+                      height: 50,
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(90),
+                      ),
+                      child:
+                          nextMatchWoman == null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(90),
+                              child: Image.asset(
+                                'assets/placeholder_image.png',
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : CachedNetworkImage(
+                              imageUrl: nextMatchWoman!.competitionLogo,
+                              placeholder: (context, url) =>
+                                  Image.asset('assets/placeholder_image.png'),
+                              errorWidget: (context, url, error) => const Icon(
+                                CupertinoIcons.nosign,
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
                     const SizedBox(width: 8),
 
                     /// competition name
                     Text(
-                      widget.nextMatchWoman?.competitionName ??
-                          'Aucune Compet.',
-                      style: widget.theme.textTheme.titleSmall!.copyWith(
+                      nextMatchWoman?.competitionName ?? 'Aucune Compet.',
+                      style: theme.textTheme.titleSmall!.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
@@ -71,8 +84,8 @@ class _NextMatchWomanWidgetState extends State<NextMatchWomanWidget> {
 
                     /// day
                     Text(
-                      '${widget.nextMatchWoman?.day ?? '0'}e Journée',
-                      style: widget.theme.textTheme.labelLarge!.copyWith(
+                      '${nextMatchWoman?.day ?? '0'}e Journée',
+                      style: theme.textTheme.labelLarge!.copyWith(
                         color: yellowLinguere,
                       ),
                     ),
@@ -88,11 +101,9 @@ class _NextMatchWomanWidgetState extends State<NextMatchWomanWidget> {
                     Flexible(
                       flex: 2,
                       child: TeamNextMatchWidget(
-                        theme: widget.theme,
-                        teamLogo: widget.nextMatchWoman?.teamLogoHome,
-                        teamName:
-                            widget.nextMatchWoman?.teamNameHome ??
-                            'Equipe dom.',
+                        theme: theme,
+                        teamLogo: nextMatchWoman?.teamLogoHome,
+                        teamName: nextMatchWoman?.teamNameHome ?? 'Equipe dom.',
                         isHome: true,
                       ),
                     ),
@@ -104,7 +115,7 @@ class _NextMatchWomanWidgetState extends State<NextMatchWomanWidget> {
                           // VS
                           Text(
                             'VS',
-                            style: widget.theme.textTheme.bodyLarge!.copyWith(
+                            style: theme.textTheme.bodyLarge!.copyWith(
                               color: Colors.white,
                             ),
                           ),
@@ -120,13 +131,12 @@ class _NextMatchWomanWidgetState extends State<NextMatchWomanWidget> {
                               borderRadius: BorderRadius.circular(90),
                             ),
                             child: Text(
-                              widget.nextMatchWoman?.matchTime ?? '-N/C-',
-                              style: widget.theme.textTheme.labelSmall!
-                                  .copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 12,
-                                  ),
+                              nextMatchWoman?.matchTime ?? '-N/C-',
+                              style: theme.textTheme.labelSmall!.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ],
@@ -137,11 +147,9 @@ class _NextMatchWomanWidgetState extends State<NextMatchWomanWidget> {
                     Flexible(
                       flex: 2,
                       child: TeamNextMatchWidget(
-                        theme: widget.theme,
-                        teamLogo: widget.nextMatchWoman?.teamLogoAway,
-                        teamName:
-                            widget.nextMatchWoman?.teamNameAway ??
-                            'Equipe ext.',
+                        theme: theme,
+                        teamLogo: nextMatchWoman?.teamLogoAway,
+                        teamName: nextMatchWoman?.teamNameAway ?? 'Equipe ext.',
                         isHome: false,
                       ),
                     ),

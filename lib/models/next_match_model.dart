@@ -10,13 +10,13 @@ class NextMatchModel {
     required this.teamNameAway,
   });
 
-  final String competitionLogo,
+  final String teamLogoAway,
+      teamLogoHome,
+      competitionLogo,
       matchTime,
       competitionName,
       day,
-      teamLogoHome,
       teamNameHome,
-      teamLogoAway,
       teamNameAway;
 }
 

@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/models/news_model.dart';
 import 'package:la_linguere/pages/otherPages/news_details.dart';
@@ -27,7 +29,7 @@ class _NewsPageState extends State<NewsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // headline
-              Text('Nos actualités', style: theme.textTheme.titleMedium),
+              Text('Nos actualités', style: theme.textTheme.titleLarge),
               const SizedBox(height: 24),
 
               // news list
@@ -69,9 +71,20 @@ class _NewsPageState extends State<NewsPage> {
                           height: 250,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6),
-                            image: DecorationImage(
-                              image: NetworkImage(news.imageActu),
+                            color: lightBg,
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: CachedNetworkImage(
+                            imageUrl: news.imageActu,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Image.asset(
+                              'assets/placeholder_image.png',
                               fit: BoxFit.cover,
+                            ),
+                            errorWidget: (context, child, url) => Icon(
+                              CupertinoIcons.photo,
+                              color: strokeColor,
+                              size: 70,
                             ),
                           ),
                         ),

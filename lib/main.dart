@@ -6,7 +6,9 @@ import 'package:la_linguere/pages/authentication/signup.dart';
 import 'package:la_linguere/pages/onBoarding/on_boarding_screen.dart';
 import 'package:la_linguere/pages/onBoarding/splash.dart';
 import 'package:la_linguere/pages/otherPages/home.dart';
+import 'package:la_linguere/providers/all_rank_provider.dart';
 import 'package:la_linguere/providers/foundation_provider.dart';
+import 'package:la_linguere/providers/matches_provider.dart';
 import 'package:la_linguere/providers/navigation_provider.dart';
 import 'package:la_linguere/providers/news_provider.dart';
 import 'package:la_linguere/providers/next_match_provider.dart';
@@ -41,6 +43,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NextMatchProvider()),
         //
         ChangeNotifierProvider(create: (_) => FoundationProvider()),
+        ChangeNotifierProvider(create: (_) => MatchesProvider()),
+        ChangeNotifierProvider(create: (_) => AllRankProvider()),
 
       ],
       child: MaterialApp(

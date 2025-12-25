@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/providers/news_provider.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +20,8 @@ class NewsWidget extends StatelessWidget {
   final ThemeData theme;
 
   final String? id;
-  final String imageActu, titleActu;
+  final String? imageActu;
+  final String titleActu;
   final DateTime dateActu;
 
   final void Function() onTapNews;
@@ -44,13 +47,24 @@ class NewsWidget extends StatelessWidget {
                 Container(
                   width: 112,
                   height: 112,
+                  clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4),
-                    image: DecorationImage(
-                      image: NetworkImage(imageActu),
-                      fit: BoxFit.cover,
-                    ),
+                    color: Colors.white,
                   ),
+                  child: imageActu == null
+                      ? Image.asset('assets/placeholder_image.png', fit: BoxFit.cover,)
+                      : CachedNetworkImage(
+                          imageUrl: imageActu!,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              Image.asset('assets/placeholder_image.png', fit: BoxFit.cover,),
+                          errorWidget: (context, url, error) =>
+                              Icon(
+                                CupertinoIcons.photo,
+                                color: strokeColor,
+                              ),
+                        ),
                 ),
                 const SizedBox(width: 10),
 

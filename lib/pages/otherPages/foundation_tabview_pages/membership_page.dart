@@ -23,18 +23,18 @@ class _MembershipPageState extends State<MembershipPage> {
         ///
         return Scaffold(
           body: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 24, 16, 90),
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 120),
             child: Column(
               children: [
                 // headline
                 Row(
                   children: [
-                    Text('Nos abonnements', style: theme.textTheme.titleMedium),
+                    Text('Nos abonnements', style: theme.textTheme.titleLarge),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: 6,
-                        horizontal: 12,
+                        horizontal: 8,
                       ),
                       decoration: BoxDecoration(
                         color: lightStrokeColor,
@@ -73,7 +73,7 @@ class _MembershipPageState extends State<MembershipPage> {
                   advantageIconColor: yellowLinguere,
                   gradient: blackGradient,
                   imageMembership: 'assets/member_image.png',
-                  titleMembership: 'member',
+                  titleMembership: 'membre',
                   priceMembership: '24000',
                   advantagesMembership: [
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
@@ -117,7 +117,7 @@ class _MembershipPageState extends State<MembershipPage> {
                   advantageIconColor: yellowLinguere,
                   gradient: blueGradient,
                   imageMembership: 'assets/member_sambalinguere.png',
-                  titleMembership: 'member',
+                  titleMembership: 'samba linguere',
                   priceMembership: '12000',
                   advantagesMembership: [
                     'Lorem ipsum dolor sit amet consectetur. Quam.',

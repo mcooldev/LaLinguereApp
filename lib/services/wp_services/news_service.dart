@@ -1,19 +1,29 @@
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 import '../../models/news_model.dart';
 import 'config.dart';
 
 class NewsService {
   ///
-  NewsService._();
+  late final Dio _dio;
+
+  NewsService._() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: 'https://$authority',
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        responseType: ResponseType.json,
+      ),
+    );
+    _dio.interceptors.add(
+      LogInterceptor(request: true, requestBody: true, responseBody: false),
+    );
+  }
 
   static final NewsService instance = NewsService._();
-
-  final client = http.Client();
-
 
   /// News variables
   final authority = Config.instance.baseUrl;
@@ -24,10 +34,9 @@ class NewsService {
   /// Fetch media url
   Future<String> fetchMedia(int mediaId) async {
     try {
-      final uri = Uri.https(authority, '/wp-json/wp/v2/media/$mediaId');
-      final response = await client.get(uri);
+      final response = await _dio.get('/wp-json/wp/v2/media/$mediaId');
       if (response.statusCode == 200) {
-        final decodedData = jsonDecode(response.body);
+        final decodedData = response.data;
         return decodedData['source_url'];
       }
       return '';
@@ -41,11 +50,13 @@ class NewsService {
   Future<List<NewsModel>> getNews() async {
     try {
       //
-      final uri = Uri.https(authority, unencodedPath, queryParameters);
-      final response = await client.get(uri);
+      final response = await _dio.get(
+        unencodedPath,
+        queryParameters: queryParameters,
+      );
       //
       if (response.statusCode == 200) {
-        final List<dynamic> decodedData = jsonDecode(response.body);
+        final List<dynamic> decodedData = response.data;
         log(decodedData.toString());
         //
         final allNews = <Future<NewsModel>>[];

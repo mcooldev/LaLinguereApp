@@ -59,6 +59,7 @@ class NavigationProvider with ChangeNotifier {
     //
     final theme = Theme.of(context);
     //
+    //
     await showModalBottomSheet(
       context: context,
       builder: (context) => Padding(
@@ -119,8 +120,21 @@ class NavigationProvider with ChangeNotifier {
       ),
     );
     //
-    if (currentIndex == 2) {
-      currentIndex = 0;
+
+  }
+
+  /// Greetings
+  DateTime now = DateTime.now();
+  String get greeting {
+    if (now.hour < 12) {
+      return 'Bonjour 🌞';
+    } else if (now.hour < 18) {
+      return 'Bon-après-midi ☀️';
+    } else {
+      return 'Bonsoir 🌙';
     }
   }
+
+
+
 }

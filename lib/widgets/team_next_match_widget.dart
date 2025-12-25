@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TeamNextMatchWidget extends StatelessWidget {
@@ -24,17 +26,26 @@ class TeamNextMatchWidget extends StatelessWidget {
           Container(
             height: 50,
             width: 50,
-            clipBehavior: Clip.none,
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(90),
-              image: DecorationImage(
-                image: (teamLogo != null && teamLogo!.startsWith('http'))
-                    ? NetworkImage(teamLogo!)
-                    : const AssetImage('assets/placeholder_image.png')
-                          as ImageProvider,
-                fit: BoxFit.cover,
-              ),
+              color: Colors.white24,
             ),
+            child: teamLogo == null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(90),
+                    child: Image.asset(
+                      'assets/placeholder_image.png',
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : CachedNetworkImage(
+                    imageUrl: teamLogo!,
+                    placeholder: (context, url) =>
+                        Image.asset('assets/placeholder_image.png'),
+                    errorWidget: (context, url, error) =>
+                        const Icon(CupertinoIcons.nosign, color: Colors.white),
+                  ),
           ),
           const SizedBox(height: 4),
 

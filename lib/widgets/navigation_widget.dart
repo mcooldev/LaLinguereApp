@@ -20,7 +20,7 @@ class NavigationWidget extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: Container(
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 32),
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: darkBlue,
               borderRadius: BorderRadius.circular(90),
@@ -34,7 +34,7 @@ class NavigationWidget extends StatelessWidget {
                 //
                 return GestureDetector(
                   onTap: () {
-                    prov.currentIndex = index;
+                    if (index != 2) prov.currentIndex = index;
                     //
                     switch (index) {
                       case 0:
@@ -116,16 +116,21 @@ class NavigationWidget extends StatelessWidget {
                         break;
                     }
                   },
-                  child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: isIndexed ? Colors.white : darkBlue,
-                      borderRadius: BorderRadius.circular(90),
-                    ),
-                    child: Icon(
-                      item,
-                      color: isIndexed ? darkBlue : Colors.white,
+                  child: AnimatedScale(
+                    duration: const Duration(milliseconds: 250),
+                    scale: isIndexed ? 1.1 : 1.0,
+                    curve: Curves.elasticInOut,
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: isIndexed ? Colors.white : Colors.transparent,
+                        borderRadius: BorderRadius.circular(90),
+                      ),
+                      child: Icon(
+                        item,
+                        color: isIndexed ? darkBlue : Colors.white,
+                      ),
                     ),
                   ),
                 );

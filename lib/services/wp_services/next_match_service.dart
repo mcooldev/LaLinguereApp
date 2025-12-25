@@ -1,17 +1,28 @@
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:la_linguere/models/next_match_model.dart';
 
 import 'config.dart';
 
 class NextMatchService {
-  NextMatchService._();
+  late final Dio _dio;
+
+  NextMatchService._() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: "https://$authority",
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        responseType: ResponseType.json,
+      ),
+    );
+    _dio.interceptors.add(
+      LogInterceptor(request: true, requestBody: true, responseBody: false),
+    );
+  }
 
   static final NextMatchService instance = NextMatchService._();
-
-  final client = http.Client();
 
   final authority = Config.instance.baseUrl;
   final unencodedPath = "/wp-json/wp/v2/next-match";
@@ -19,25 +30,22 @@ class NextMatchService {
 
   /// Fetch media url
   Future<String> fetchMedia(int mediaId) async {
-    final defaultMedia = 'assets/placeholder_image.png';
     try {
-      final uri = Uri.https(authority, '/wp-json/wp/v2/media/$mediaId');
-      final response = await client.get(uri);
+      final response = await _dio.get('/wp-json/wp/v2/media/$mediaId');
       if (response.statusCode == 200) {
-        final decodedData = jsonDecode(response.body);
-        return decodedData['source_url'];
-      } else {
-        log('Error fetching media: ${response.statusCode}');
-        return defaultMedia;
+        final decodedData = response.data;
+        return decodedData['source_url'] ?? '';
       }
+      return '';
     } catch (e) {
-      log(e.toString());
-      return defaultMedia;
+      log("Erreur Media $mediaId: $e");
+      return '';
     }
   }
 
   /// Get next match
   Future<NextMatchModel> getNextMatch() async {
+    //
     final defaultNextMatch = NextMatchModel(
       competitionLogo: '',
       competitionName: '',
@@ -48,68 +56,27 @@ class NextMatchService {
       teamLogoAway: '',
       teamNameAway: '',
     );
+    //
     try {
-      final uri = Uri.https(authority, unencodedPath, queryParameters);
-      final response = await client.get(uri);
-
+      //
+      final response = await _dio.get(
+        "/wp-json/wp/v2/next-match",
+        queryParameters: queryParameters,
+      );
+      //
       if (response.statusCode == 200) {
-        final List<dynamic> decodedData = jsonDecode(response.body);
-        if (decodedData.isEmpty) {
-          log('No data found for the next match.');
-          return defaultNextMatch;
-        }
+        final List<dynamic> decodedData = response.data;
         //
-        final acfData = decodedData[0]['acf'];
+        final acfData = decodedData[0]['acf'] as Map<String, dynamic>?;
         if (acfData != null) {
-          //
-          final competitionLogoInt = acfData['logo_competition'];
-          final String competitionLogo = await fetchMedia(competitionLogoInt);
-          //
-          final String competitionName = acfData['nom_de_la_competition'];
-          final String day = acfData['journee'];
-          final String matchTimeString =
-              acfData['heure_du_match'] as String? ?? "00:00";
-          int hours = 0;
-          int minutes = 0;
-          if (matchTimeString.contains(":")) {
-            final parts = matchTimeString.split(':');
-            hours = int.tryParse(parts[0]) ?? 0;
-            if (parts.length > 2) {
-              minutes = int.tryParse(parts[1]) ?? 0;
-            }
-          }
-          final String matchTime =
-              '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
-          //
-          final teamLogoHomeInt = acfData['logo_equipe_domicile'];
-          final teamLogoAwayInt = acfData['logo_equipe_exterieur'];
-          final logos = await Future.wait([
-            fetchMedia(teamLogoHomeInt),
-            fetchMedia(teamLogoAwayInt),
-          ]);
-          final String teamLogoHome = logos[0];
-          final String teamLogoAway = logos[1];
-          //
-          final String teamNameHome = acfData['nom_equipe_domicile'];
-          //
-          final String teamNameAway = acfData['nom_equipe_exterieur'];
-          //
-          final nextMatchToAdd = NextMatchModel(
-            competitionLogo: competitionLogo,
-            competitionName: competitionName,
-            day: day,
-            matchTime: matchTime,
-            teamLogoHome: teamLogoHome,
-            teamNameHome: teamNameHome,
-            teamLogoAway: teamLogoAway,
-            teamNameAway: teamNameAway,
-          );
-
-          return nextMatchToAdd;
+          final fetchedMatch = await makeNextMatch(acfData);
+          log('Next match fetched successfully.');
+          return fetchedMatch;
         } else {
           log('Error: Un ou des champs ACF sont manquants.');
           return defaultNextMatch;
         }
+        //
       } else {
         log('Error fetching next match: ${response.statusCode}');
         return defaultNextMatch;
@@ -118,5 +85,54 @@ class NextMatchService {
       log(e.toString());
       return defaultNextMatch;
     }
+  }
+
+  Future<NextMatchModel> makeNextMatch(Map<String, dynamic> acfData) async {
+    //
+    final String competitionName = acfData['nom_de_la_competition'];
+    final String day = acfData['journee'];
+    final String matchTimeString =
+        acfData['heure_du_match'] as String? ?? "00:00";
+    int hours = 0;
+    int minutes = 0;
+    if (matchTimeString.contains(":")) {
+      final parts = matchTimeString.split(':');
+      hours = int.tryParse(parts[0]) ?? 0;
+      if (parts.length > 2) {
+        minutes = int.tryParse(parts[1]) ?? 0;
+      }
+    }
+    final String matchTime =
+        '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+    final String teamNameHome = acfData['nom_equipe_domicile'];
+    //
+    final String teamNameAway = acfData['nom_equipe_exterieur'];
+    //
+    final rawCompetitionLogo = acfData['logo_competition'] as int;
+    final rawTeamLogoHome = acfData['logo_equipe_domicile'] as int;
+    final rawTeamLogoAway = acfData['logo_equipe_exterieur'] as int;
+    final futures = await Future.wait([
+      fetchMedia(rawCompetitionLogo),
+      fetchMedia(rawTeamLogoHome),
+      fetchMedia(rawTeamLogoAway),
+    ]);
+    final String competitionLogo = futures[0];
+    final String teamLogoHome = futures[1];
+    final String teamLogoAway = futures[2];
+    //
+    final nextMatchToAdd = NextMatchModel(
+      competitionLogo: competitionLogo,
+      competitionName: competitionName,
+      day: day,
+      matchTime: matchTime,
+      teamLogoHome: teamLogoHome,
+      teamNameHome: teamNameHome,
+      teamLogoAway: teamLogoAway,
+      teamNameAway: teamNameAway,
+    );
+    //
+    log('Next match made successfully.');
+    //
+    return nextMatchToAdd;
   }
 }

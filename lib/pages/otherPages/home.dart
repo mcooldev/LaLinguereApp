@@ -32,39 +32,19 @@ class _HomeState extends State<Home> {
     super.initState();
 
     ///
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
       //
-      final newsProvider = Provider.of<NewsProvider>(context, listen: false);
-      newsProvider.fetchAllNews();
+      await Future.wait([
+        context.read<NextMatchProvider>().fetchNextMatch(),
+        context.read<RankingProvider>().fetchRanking(),
+        context.read<NewsProvider>().fetchAllNews(),
+      ]);
       //
-      final rankingProvider = Provider.of<RankingProvider>(
-        context,
-        listen: false,
-      );
-      rankingProvider.fetchRanking();
-      //
-      final nextMatchProvider = Provider.of<NextMatchProvider>(
-        context,
-        listen: false,
-      );
-      nextMatchProvider.fetchNextMatch();
-      //
-      final navProvider = Provider.of<NavigationProvider>(
-        context,
-        listen: false,
-      );
-      navProvider.currentIndex = 0;
-      //
+      if (!mounted) return;
+      context.read<NavigationProvider>().currentIndex = 0;
       context.read<FoundationProvider>().teamPageIndex = 0;
     });
-
-    ///
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
   }
 
   ///
@@ -72,7 +52,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     ///
     final theme = Theme.of(context);
-    final navProvider = Provider.of<NavigationProvider>(context, listen: false);
+    final navProvider = context.watch<NavigationProvider>();
 
     ///
     return Scaffold(
@@ -103,10 +83,11 @@ class _HomeState extends State<Home> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Bonjour 🌞',
+                  navProvider.greeting,
                   style: theme.textTheme.labelLarge!.copyWith(color: bodyText),
                 ),
                 Text(
+                  // todo: get user name from current user
                   'Mouhamadou',
                   style: theme.textTheme.titleSmall!.copyWith(
                     fontWeight: FontWeight.w600,
@@ -214,158 +195,153 @@ class _HomeState extends State<Home> {
       body: Stack(
         children: [
           /// Body content
-          SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Next match headline
-                Text('Prochain match', style: theme.textTheme.titleMedium),
-                const SizedBox(height: 8),
+          RefreshIndicator(
+            color: Colors.white,
+            backgroundColor: darkBlue,
+            elevation: 0,
+            edgeOffset: 0.1,
+            onRefresh: () async {
+              await Future.wait([
+                context.read<NewsProvider>().refreshNews(),
+                context.read<RankingProvider>().refreshRanking(),
+                context.read<NextMatchProvider>().refreshNextMatch(),
+              ]);
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Next match headline
+                  Text('Prochain match', style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8),
 
-                /// Next match widget
-                Consumer<NextMatchProvider>(
-                  builder: (_, prov, _) {
-                    return NextMatchWidget(
-                      theme: theme,
-                      nextMatch: prov.nextMatch,
-                      isLoading: prov.isLoading,
-                      onTapLiveWatch: () {
-                        // todo: go to Youtube channel for live watching
-                        navProvider.showBottomSheet(
-                          context: context,
-                          onTapBtn: () {
-                            navProvider.goToUrl(
-                              url:
-                                  "https://www.youtube.com/@ascelinguere8675/featured",
-                            );
-                            //
-                            Navigator.pop(context);
-                          },
-                          btnText: 'Continuer vers la chaine Youtube',
-                          title: "Live Match  📺  🎥",
-                          bodyContent:
-                              "Vous allez être redirigé vers notre chaine Youtube pour suivre le match.",
-                          widget: Container(
-                            height: 60,
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 15,
-                            ),
-                            decoration: BoxDecoration(
-                              color: lightBg,
-                              borderRadius: BorderRadius.circular(90),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // logo linguere
-                                Flexible(
-                                  child: Image.asset(
-                                    'assets/ll_logo_h.png',
-                                    fit: BoxFit.cover,
+                  /// Next match widget
+                  Consumer<NextMatchProvider>(
+                    builder: (_, prov, _) {
+                      return NextMatchWidget(
+                        theme: theme,
+                        nextMatch: prov.nextMatch,
+                        isLoading: prov.isLoading,
+                        onTapLiveWatch: () {
+                          // todo: go to Youtube channel for live watching
+                          navProvider.showBottomSheet(
+                            context: context,
+                            onTapBtn: () {
+                              navProvider.goToUrl(
+                                url:
+                                    "https://www.youtube.com/@ascelinguere8675/featured",
+                              );
+                              //
+                              Navigator.pop(context);
+                            },
+                            btnText: 'Continuer vers la chaine Youtube',
+                            title: "Live Match  📺  🎥",
+                            bodyContent:
+                                "Vous allez être redirigé vers notre chaine Youtube pour suivre le match.",
+                            widget: Container(
+                              height: 60,
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                color: lightBg,
+                                borderRadius: BorderRadius.circular(90),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // logo linguere
+                                  Flexible(
+                                    child: Image.asset(
+                                      'assets/ll_logo_h.png',
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 12),
+                                  const SizedBox(width: 12),
 
-                                // arrow
-                                SvgPicture.asset(
-                                  'assets/arrow_right_livewatch.svg',
-                                ),
-                                const SizedBox(width: 12),
+                                  // arrow
+                                  SvgPicture.asset(
+                                    'assets/arrow_right_livewatch.svg',
+                                  ),
+                                  const SizedBox(width: 12),
 
-                                // logo diotali
-                                SvgPicture.asset('assets/logo_youtube.svg'),
-                              ],
+                                  // logo diotali
+                                  SvgPicture.asset('assets/logo_youtube.svg'),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      onTapSeeOtherMatch: () {
-                        // todo: go to other match page
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 24),
-
-                /// Ranking
-                Text('Classement', style: theme.textTheme.titleMedium),
-                const SizedBox(height: 8),
-                Consumer<RankingProvider>(
-                  builder: (_, prov, _) => RankingHomeWidget(
-                    theme: theme,
-                    rankingModel: prov.ranking,
+                          );
+                        },
+                        onTapSeeOtherMatch: () {
+                          // todo: go to other match page
+                        },
+                      );
+                    },
                   ),
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                /// Last news
-                Row(
-                  children: [
-                    Text(
-                      'Dernières actualités',
-                      style: theme.textTheme.titleMedium,
+                  /// Ranking
+                  Text('Classement', style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  Consumer<RankingProvider>(
+                    builder: (_, prov, _) => RankingHomeWidget(
+                      theme: theme,
+                      rankingModel: prov.ranking,
                     ),
-                    const Spacer(),
-                    TextButton(
-                      onPressed: () {
-                        // todo: go to news page
-                        navProvider.navigateWithFadeTransition(
-                          context,
-                          const Foundation(),
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Text(
-                            'Voir tous',
-                            style: theme.textTheme.labelLarge!.copyWith(
-                              color: blueLinguere,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Icon(
-                            CupertinoIcons.arrow_right,
-                            color: blueLinguere,
-                            size: 18,
-                          ),
-                        ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  /// Last news
+                  Row(
+                    children: [
+                      Text(
+                        'Dernières actualités',
+                        style: theme.textTheme.titleMedium,
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Consumer<NewsProvider>(
-                  builder: (_, prov, _) {
-                    if (prov.isLoading) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          // todo: go to news page
+                          navProvider.navigateWithFadeTransition(
+                            context,
+                            const Foundation(),
+                          );
+                        },
+                        child: Row(
                           children: [
-                            const SizedBox(height: 10),
-                            CircularProgressIndicator.adaptive(
-                              backgroundColor: bodyText,
-                            ),
-                            const SizedBox(height: 10),
                             Text(
-                              'Chargement des actualités...',
-                              style: theme.textTheme.labelMedium,
+                              'Voir tous',
+                              style: theme.textTheme.labelLarge!.copyWith(
+                                color: blueLinguere,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Icon(
+                              CupertinoIcons.arrow_right,
+                              color: blueLinguere,
+                              size: 18,
                             ),
                           ],
                         ),
-                      );
-                    } else {
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Consumer<NewsProvider>(
+                    builder: (_, prov, _) {
                       return ListView.separated(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: prov.newsList.length,
                         separatorBuilder: (ctx, index) =>
-                            const SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         itemBuilder: (ctx, index) {
                           //
                           final news = prov.newsList[index];
@@ -397,10 +373,10 @@ class _HomeState extends State<Home> {
                           );
                         },
                       );
-                    }
-                  },
-                ),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
 

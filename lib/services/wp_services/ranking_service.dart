@@ -1,17 +1,29 @@
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 import '../../models/ranking_model.dart';
 import 'config.dart';
 
 class RankingService {
-  RankingService._();
+  late final Dio _dio;
 
-  static final RankingService instance = RankingService._();
+  RankingService._() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: "https://${Config.instance.baseUrl}",
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        responseType: ResponseType.json,
+      ),
+    );
+    _dio.interceptors.add(
+      LogInterceptor(request: true, requestBody: true, responseBody: false),
+    );
+  }
 
-  final client = http.Client();
+  static final RankingService _instance = RankingService._();
+  static RankingService get instance => _instance;
 
 
   /// Ranking variables
@@ -28,11 +40,13 @@ class RankingService {
     final defaultRanking = RankingModel(place: 0, points: 0, playedMatch: 0);
     //
     try {
-      final uri = Uri.https(authority, unencodedPath, queryParameters);
-      final response = await client.get(uri);
+      final response = await _dio.get(
+        unencodedPath,
+        queryParameters: queryParameters,
+      );
       //
       if (response.statusCode == 200) {
-        final List<dynamic> decodedData = jsonDecode(response.body);
+        final List<dynamic> decodedData = response.data;
         log(decodedData.toString());
         //
         final acfData = decodedData[0]['acf'];

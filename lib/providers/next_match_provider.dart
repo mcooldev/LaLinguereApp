@@ -10,21 +10,25 @@ class NextMatchProvider with ChangeNotifier {
 
   NextMatchModel? get nextMatch => _nextMatch;
   bool _isLoading = false;
+  bool _isLoaded = false;
 
   bool get isLoading => _isLoading;
 
+  bool get isLoaded => _isLoaded;
+
   Future<void> fetchNextMatch() async {
+    //
+    if (_isLoaded) return;
+    //
+    _isLoading = true;
+    notifyListeners();
     try {
-      //
-      _isLoading = true;
-      notifyListeners();
       //
       final fetchedNextMatch = await NextMatchService.instance.getNextMatch();
       _nextMatch = fetchedNextMatch;
       //
-      notifyListeners();
-      //
       _isLoading = false;
+      _isLoaded = true;
       notifyListeners();
       //
     } catch (e) {
@@ -34,5 +38,10 @@ class NextMatchProvider with ChangeNotifier {
       notifyListeners();
       //
     }
+  }
+
+  Future<void> refreshNextMatch() async {
+    _isLoaded = false;
+    await fetchNextMatch();
   }
 }

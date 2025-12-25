@@ -10,18 +10,24 @@ class RankingProvider with ChangeNotifier {
 
   RankingModel? get ranking => _ranking;
   bool _isLoading = false;
+  bool _isLoaded = false;
 
   bool get isLoading => _isLoading;
 
+  bool get isLoaded => _isLoaded;
+
   Future fetchRanking() async {
+    if (_isLoaded) return;
+    //
+    _isLoading = true;
+    notifyListeners();
     try {
-      _isLoading = true;
-      notifyListeners();
       //
       final fetchedRanking = await RankingService.instance.getRanking();
       _ranking = fetchedRanking;
       //
       _isLoading = false;
+      _isLoaded = true;
       notifyListeners();
       //
     } catch (e) {
@@ -29,5 +35,10 @@ class RankingProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> refreshRanking() async {
+    _isLoaded = false;
+    await fetchRanking();
   }
 }
