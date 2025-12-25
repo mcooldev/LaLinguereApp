@@ -22,6 +22,18 @@ class StandingListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ///
+    final colorStanding = standing?.rank == 1
+        ? Colors.green
+        : (standing?.rank == 15 || standing?.rank == 16)
+        ? Colors.red
+        : standing?.teamName.toString() == "La Linguère"
+        ? yellowLinguere
+        : Colors.transparent;
+    //
+    final textColorStanding =
+        (standing?.rank == 1 || standing?.rank == 15 || standing?.rank == 16)
+        ? Colors.white
+        : darkBlue;
 
     ///
     return Container(
@@ -38,11 +50,11 @@ class StandingListWidget extends StatelessWidget {
               // Position
               CircleAvatar(
                 radius: 16,
-                backgroundColor: Colors.white24,
+                backgroundColor: !isHeader ? colorStanding : Colors.white12,
                 child: Text(
                   !isHeader ? standing!.rank.toString() : "#",
                   style: theme.textTheme.labelLarge!.copyWith(
-                    color: !isHeader ? darkBlue : Colors.white,
+                    color: !isHeader ? textColorStanding : Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
