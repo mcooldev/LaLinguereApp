@@ -68,7 +68,7 @@ class NextMatchWidget extends StatelessWidget {
                               color: Colors.white,
                             ),
                         errorWidget: (context, url, error) => const Icon(
-                          CupertinoIcons.exclamationmark_circle,
+                          CupertinoIcons.nosign,
                           color: Colors.white,
                         ),
                       ),

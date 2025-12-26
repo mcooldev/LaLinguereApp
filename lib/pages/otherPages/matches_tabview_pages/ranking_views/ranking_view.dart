@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:la_linguere/providers/all_rank_provider.dart';
+import 'package:la_linguere/providers/matches_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +28,8 @@ class _RankingViewState extends State<RankingView> {
   Widget build(BuildContext context) {
     ///
     final theme = Theme.of(context);
+    final matchesProvider = Provider.of<MatchesProvider>(context);
+
 
     ///
     return Consumer<AllRankProvider>(
@@ -55,33 +58,65 @@ class _RankingViewState extends State<RankingView> {
                 ),
                 const SizedBox(height: 16),
 
-                /// Standing table header
-                StandingListWidget(
-                  theme: theme,
-                  isHeader: true,
-                  bgColor: darkBlue,
-                ),
+                if(prov.isLoading)
+                  const Center(
+                    child: Column(
+                      children: [
+                        CircularProgressIndicator.adaptive(),
+                        SizedBox(height: 12),
+                        Text('Chargement du classement en cours...'),
+                      ],
+                    ),
+                  )
+                else if(matchesProvider.matchesViewIndex == 1)
+                  const Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 200,
+                          width: 250,
+                          child: Image(
+                            image: AssetImage('assets/empty_goal.png'),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Text('Classement non disponible.'),
+                      ],
+                    ),
+                  )
+                else if (matchesProvider.matchesViewIndex == 0)
+                  /// Standing table
+                  Column(
+                    children: [
+                      /// Standing table header
+                      StandingListWidget(
+                        theme: theme,
+                        isHeader: true,
+                        bgColor: darkBlue,
+                      ),
 
-                /// Standing list
-                ListView.builder(
-                  itemCount: prov.standingList.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (context, i) {
-                    //
-                    final standing = prov.standingList[i];
-                    final color = i % 2 == 0 ? Colors.white : lightBlueBg;
+                      /// Standing list
+                      ListView.builder(
+                        itemCount: prov.standingList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (context, i) {
+                          //
+                          final standing = prov.standingList[i];
+                          final color = i % 2 == 0 ? Colors.white : lightBlueBg;
 
-                    //
-                    return StandingListWidget(
-                      theme: theme,
-                      bgColor: color,
-                      isHeader: false,
-                      standing: standing,
-                    );
-                  },
-                ),
+                          //
+                          return StandingListWidget(
+                            theme: theme,
+                            bgColor: color,
+                            isHeader: false,
+                            standing: standing,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),

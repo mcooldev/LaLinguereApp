@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:la_linguere/models/news_model.dart';
 import 'package:la_linguere/pages/otherPages/foundation.dart';
+import 'package:la_linguere/pages/otherPages/matches.dart';
 import 'package:la_linguere/pages/otherPages/news_details.dart';
 import 'package:la_linguere/providers/foundation_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
@@ -279,7 +280,7 @@ class _HomeState extends State<Home> {
                           );
                         },
                         onTapSeeOtherMatch: () {
-                          // todo: go to other match page
+                          navProvider.navigateWithFadeTransition(context, const Matches());
                         },
                       );
                     },

@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/models/ranking_model.dart';
+import 'package:la_linguere/pages/otherPages/matches.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/matches_provider.dart';
+import '../providers/navigation_provider.dart';
 import '../utils/constants/app_colors.dart';
 
 class RankingHomeWidget extends StatelessWidget {
@@ -17,6 +21,10 @@ class RankingHomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ///
+    final matchesProvider = context.watch<MatchesProvider>();
+
+    ///
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
@@ -94,6 +102,11 @@ class RankingHomeWidget extends StatelessWidget {
           MaterialButton(
             onPressed: () {
               // todo: see all ranking
+              matchesProvider.setTabIndex(2);
+              context.read<NavigationProvider>().navigateWithFadeTransition(
+                context,
+                const Matches(),
+              );
             },
             color: Colors.transparent,
             height: 48,

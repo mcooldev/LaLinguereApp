@@ -15,15 +15,36 @@ class MatchesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  int _tabIndex = 0;
+
+  int get tabIndex => _tabIndex;
+
   void initTabController(TickerProvider vsync) {
-    _tabController = TabController(length: 3, vsync: vsync);
-    _tabController!.addListener(_handleTabSelection);
+    _tabController = TabController(
+      length: 3,
+      vsync: vsync,
+      initialIndex: _tabIndex,
+    );
+    _tabController!.addListener(handleTabSelection);
     notifyListeners();
     //
   }
 
-  void _handleTabSelection() {
+  void resetTabIndex() {
+    _tabIndex = 0;
+  }
+
+  void setTabIndex(int index) {
+    _tabIndex = index;
+    _tabController?.animateTo(index);
     notifyListeners();
+  }
+
+  void handleTabSelection() {
+    if (_tabController != null) {
+      _tabIndex = _tabController!.index;
+      notifyListeners();
+    }
   }
 
   String get appBarTitle {

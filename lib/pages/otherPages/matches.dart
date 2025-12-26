@@ -23,10 +23,13 @@ class Matches extends StatefulWidget {
 
 class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
   ///
+  late MatchesProvider matchesProvider;
+
   @override
   void initState() {
     super.initState();
     //
+    matchesProvider = Provider.of<MatchesProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       //
       if (!mounted) return;
@@ -40,6 +43,13 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
       if (!mounted) return;
       context.read<NavigationProvider>().currentIndex = 1;
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    matchesProvider.resetTabIndex();
+    super.dispose();
   }
 
   ///

@@ -9,6 +9,7 @@ Color strokeColor = const Color(0xffD6DCE1);
 Color bodyText = const Color(0xff45535F);
 Color lightBlueBg = const Color(0xffF0FAFF);
 Color redLaLinguere = const Color(0xffD10101);
+Color greenLaLinguere = const Color(0xff018B00);
 
 final Gradient blueGradient = const LinearGradient(
   begin: Alignment.topLeft,
