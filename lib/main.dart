@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/pages/authentication/forget_password.dart';
 import 'package:la_linguere/pages/authentication/login.dart';
@@ -17,21 +18,26 @@ import 'package:la_linguere/providers/next_match_provider.dart';
 import 'package:la_linguere/providers/on_boarding_provider.dart';
 import 'package:la_linguere/providers/ranking_provider.dart';
 import 'package:la_linguere/providers/support_provider.dart';
+import 'package:la_linguere/services/firebase_services/fcm_service.dart';
 import 'package:la_linguere/services/wp_services/config.dart';
 import 'package:la_linguere/utils/theme/theme_data.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
+
 ///
 final navKey = GlobalKey<NavigatorState>();
 final config = Config.instance;
+final fcm = FcmService.instance;
 
 ///
 
-void main() {
-  runApp(const MyApp());
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //
-  config.initOneSignal();
+  await fcm.initFcm();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

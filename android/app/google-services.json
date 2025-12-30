@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1051920178350",
+    "project_id": "la-linguere",
+    "storage_bucket": "la-linguere.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1051920178350:android:8a19b64cd179fefabfe13f",
+        "android_client_info": {
+          "package_name": "com.example.la_linguere"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTeLXrF9GpRSxDi_7e1qhOg34kfXk63oA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
