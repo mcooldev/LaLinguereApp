@@ -169,7 +169,6 @@ class NextMatchWidget extends StatelessWidget {
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(90),
-              side: const BorderSide(width: 1, color: Colors.white24),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

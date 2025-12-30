@@ -29,7 +29,7 @@ class AppTheme {
         color: Colors.black,
       ),
       titleLarge: GoogleFonts.manrope(
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: FontWeight.w600,
         color: Colors.black,
       ),

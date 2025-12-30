@@ -48,8 +48,8 @@ dependencies:
   infinite_carousel: ^1.1.1
   grouped_list: ^6.0.0
   dio: ^5.9.0
-  http: ^1.6.0
   cached_network_image: ^3.4.1
+  onesignal_flutter: ^5.3.5
 
 dev_dependencies:
   flutter_test:

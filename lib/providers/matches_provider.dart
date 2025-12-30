@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:la_linguere/services/other_service/results_service.dart';
 
 import '../models/calendar_model.dart';
+import '../models/result_model.dart';
 import '../services/wp_services/calendar_service.dart';
 
 class MatchesProvider with ChangeNotifier {
@@ -135,6 +137,57 @@ class MatchesProvider with ChangeNotifier {
     _isLoaded = false;
     await fetchCalendar();
   }
+
+  /// Results data
+  final List<ResultModel> _resultsList = [];
+
+  List<ResultModel> get resultsList => [..._resultsList];
+
+  late ResultModel linguereResult;
+
+
+  Future<void> fetchResults() async {
+    if (_isLoaded) return;
+    //
+    _isLoading = true;
+    notifyListeners();
+    //
+    try {
+      final fetchedResults = await ResultsService.instance.getResults();
+      _resultsList.clear();
+      _resultsList.addAll(fetchedResults);
+      //
+      linguereResult = _resultsList.firstWhere(
+            (r) =>
+        (r.teamHomeName == "ASC Linguère" ||
+            r.teamAwayName == "ASC Linguère"),
+        orElse: () => ResultModel(
+          teamHomeName: "",
+          teamAwayName: "",
+          teamHomeScore: "0",
+          teamAwayScore: "0",
+          teamHomeLogo: '',
+          teamAwayLogo: '',
+        ),
+      );
+      notifyListeners();
+      //
+      _isLoading = false;
+      _isLoaded = true;
+      notifyListeners();
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshResults() async {
+    _isLoaded = false;
+    await fetchResults();
+  }
+
+
 
   /// Disposer
   @override

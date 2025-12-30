@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/navigation_provider.dart';
@@ -28,7 +29,24 @@ class _NextMatchState extends State<NextMatch> {
       builder: (_, prov, _) {
         //
         final nextMatch = prov.nextMatch;
-
+        final isLoading = prov.isLoading;
+        //
+        if (isLoading) {
+          return Center(
+            child: Column(
+              children: [
+                const CircularProgressIndicator.adaptive(
+                  backgroundColor: Colors.white,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Chargement en cours...',
+                  style: GoogleFonts.manrope(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
+          );
+        }
         //
         return Column(
           children: [
@@ -44,8 +62,7 @@ class _NextMatchState extends State<NextMatch> {
                     color: Colors.white24,
                     borderRadius: BorderRadius.circular(90),
                   ),
-                  child:
-                      nextMatch?.competitionLogo == null
+                  child: nextMatch?.competitionLogo == null
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(90),
                           child: Image.asset(
@@ -208,7 +225,6 @@ class _NextMatchState extends State<NextMatch> {
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(90),
-                side: const BorderSide(width: 1, color: Colors.white24),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

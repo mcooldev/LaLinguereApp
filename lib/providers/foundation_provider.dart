@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:la_linguere/models/contact_model.dart';
@@ -6,6 +8,7 @@ import 'package:la_linguere/models/ranking_model.dart';
 import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/history_view.dart';
 import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/team_u15_view.dart';
 import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/team_woman_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FoundationProvider with ChangeNotifier {
   final List<Widget> _teamPages = [
@@ -75,20 +78,44 @@ class FoundationProvider with ChangeNotifier {
       label: 'Adresse',
       content: 'Linguère, Saint-Louis',
       iconData: CupertinoIcons.map,
+      onTap: onTapLocation,
     ),
     ContactModel(
       label: 'Adresse mail',
       content: 'infos@lalinguere.com',
       iconData: CupertinoIcons.at,
+      onTap: onTapMail
     ),
     ContactModel(
       label: 'Téléphone',
       content: '+221 77 200 69 87',
       iconData: CupertinoIcons.phone,
+      onTap: onTapPhone
     ),
   ];
 
   List<ContactModel> get infoContact => _infoContact;
+
+  static void onTapLocation() async {
+    final url = Uri.parse('https://maps.app.goo.gl/D6mHhE7Teqg7k12N9');
+    if (!await launchUrl(url)) {
+      log('Could not launch location: $url');
+    }
+  }
+
+  static void onTapMail() async {
+    final uri = Uri(scheme: 'mailto', path: 'infos@lalinguere.com');
+    if (!await launchUrl(uri)) {
+      log('Could not launch mail: $uri');
+    }
+  }
+
+  static void onTapPhone() async {
+    final uri = Uri(scheme: 'tel', path: '+221772006987');
+    if (!await launchUrl(uri)) {
+      log('Could not launch phone: $uri');
+    }
+  }
 
   /// Next match woman
   final NextMatchWomanModel _nextMatchWoman = NextMatchWomanModel(

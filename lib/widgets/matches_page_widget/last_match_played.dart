@@ -1,9 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:la_linguere/models/result_model.dart';
 
-import '../../models/next_match_model.dart';
 import '../../utils/constants/app_colors.dart';
 import '../team_next_match_widget.dart';
 
@@ -11,21 +9,30 @@ class LastMatchPlayed extends StatelessWidget {
   const LastMatchPlayed({
     super.key,
     required this.theme,
-    this.nextMatch,
+    required this.result,
     required this.isLoading,
   });
 
   final ThemeData theme;
-  final NextMatchModel? nextMatch;
+  final ResultModel result;
 
   final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? const Center(
-            child: CircularProgressIndicator.adaptive(
-              backgroundColor: Colors.white,
+        ? Center(
+            child: Column(
+              children: [
+                const CircularProgressIndicator.adaptive(
+                  backgroundColor: Colors.white,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Chargement en cours...',
+                  style: GoogleFonts.manrope(color: Colors.white, fontSize: 16),
+                ),
+              ],
             ),
           )
         : Column(
@@ -43,29 +50,16 @@ class LastMatchPlayed extends StatelessWidget {
                       color: Colors.white24,
                       borderRadius: BorderRadius.circular(90),
                     ),
-                    child: nextMatch?.competitionLogo == null
-                        ? ClipRRect(
-                      borderRadius: BorderRadius.circular(90),
-                      child: Image.asset(
-                        'assets/placeholder_image.png',
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                        : CachedNetworkImage(
-                      imageUrl: nextMatch!.competitionLogo,
-                      placeholder: (context, url) =>
-                          Image.asset('assets/placeholder_image.png'),
-                      errorWidget: (context, url, error) => const Icon(
-                        CupertinoIcons.nosign,
-                        color: Colors.white,
-                      ),
+                    child: Image.asset(
+                      "assets/logo_ligue_1.png",
+                      fit: BoxFit.contain,
                     ),
                   ),
                   const SizedBox(width: 8),
 
                   /// competition name
                   Text(
-                    nextMatch?.competitionName ?? 'Aucune Compet.',
+                    'Ligue 1',
                     style: theme.textTheme.titleSmall!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -75,7 +69,7 @@ class LastMatchPlayed extends StatelessWidget {
 
                   /// day
                   Text(
-                    '${nextMatch?.day ?? '0'}e Journée',
+                    'Journée -N/C-',
                     style: theme.textTheme.labelLarge!.copyWith(
                       color: yellowLinguere,
                     ),
@@ -92,12 +86,12 @@ class LastMatchPlayed extends StatelessWidget {
                   Flexible(
                     child: TeamNextMatchWidget(
                       theme: theme,
-                      teamLogo: nextMatch?.teamLogoHome,
-                      teamName: nextMatch?.teamNameHome ?? 'Equipe dom.',
+                      teamLogo: result.teamHomeLogo,
+                      teamName: result.teamHomeName,
                       isHome: true,
                     ),
                   ),
-                  // VS and time
+                  // results
                   Flexible(
                     flex: 1,
                     child: Container(
@@ -115,7 +109,7 @@ class LastMatchPlayed extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '1',
+                            result.teamHomeScore,
                             style: GoogleFonts.manrope(
                               fontSize: 32,
                               fontWeight: FontWeight.w700,
@@ -133,7 +127,7 @@ class LastMatchPlayed extends StatelessWidget {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            '2',
+                            result.teamAwayScore,
                             style: GoogleFonts.manrope(
                               fontSize: 32,
                               fontWeight: FontWeight.w700,
@@ -149,8 +143,8 @@ class LastMatchPlayed extends StatelessWidget {
                   Flexible(
                     child: TeamNextMatchWidget(
                       theme: theme,
-                      teamLogo: nextMatch?.teamLogoAway,
-                      teamName: nextMatch?.teamNameAway ?? 'Equipe ext.',
+                      teamLogo: result.teamAwayLogo,
+                      teamName: result.teamAwayName,
                       isHome: false,
                     ),
                   ),

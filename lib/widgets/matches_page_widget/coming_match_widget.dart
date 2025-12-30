@@ -24,18 +24,18 @@ class ComingMatchWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(width: 1, color: strokeColor),
+        border: Border.all(width: 1, color: lightStrokeColor),
       ),
       child: calendar.isHome
           ? Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // la linguere team
                 Expanded(
                   flex: 3,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         "La Linguere",
@@ -62,8 +62,8 @@ class ComingMatchWidget extends StatelessWidget {
                 ),
 
                 // VS & date
-                Expanded(
-                  flex: 2,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Column(
                     children: [
                       // VS
@@ -101,7 +101,7 @@ class ComingMatchWidget extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CircleAvatar(
                         radius: 24,
@@ -128,13 +128,13 @@ class ComingMatchWidget extends StatelessWidget {
               ],
             )
           : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // opposing team
                 Expanded(
                   flex: 3,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Flexible(
                         child: Text(
@@ -159,8 +159,8 @@ class ComingMatchWidget extends StatelessWidget {
                   ),
                 ),
                 // VS & date
-                Expanded(
-                  flex: 2,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Column(
                     children: [
                       // VS
@@ -197,7 +197,7 @@ class ComingMatchWidget extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const CircleAvatar(
                         radius: 16,

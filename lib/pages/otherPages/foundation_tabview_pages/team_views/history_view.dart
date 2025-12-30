@@ -122,6 +122,7 @@ class _HistoryViewState extends State<HistoryView> {
                     final info = prov.infoContact[i];
                     //
                     return ListTile(
+                      onTap: info.onTap,
                       leading: CircleAvatar(
                         backgroundColor: darkBlue,
                         child: Icon(info.iconData, color: yellowLinguere),

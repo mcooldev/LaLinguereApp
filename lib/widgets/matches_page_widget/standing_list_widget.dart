@@ -25,7 +25,7 @@ class StandingListWidget extends StatelessWidget {
     final colorStanding = standing?.rank == 1
         ? Colors.green
         : (standing?.rank == 15 || standing?.rank == 16)
-        ? Colors.red
+        ? redLaLinguere
         : standing?.teamName.toString() == "La Linguère"
         ? yellowLinguere
         : Colors.transparent;

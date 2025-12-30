@@ -22,6 +22,7 @@ class _ProfileState extends State<Profile> {
       /// App bar content
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        centerTitle: true,
         title: const Text('Mon compte'),
         //
         bottom: PreferredSize(
@@ -106,7 +107,7 @@ class _ProfileState extends State<Profile> {
                       // Support list tile
                       ListTile(
                         onTap: () {
-                          // todo: open support page
+                          Navigator.pushNamed(context, '/support');
                         },
                         //
                         leading: const Icon(CupertinoIcons.question),
@@ -169,15 +170,15 @@ class _ProfileState extends State<Profile> {
                           // todo: logout user
                         },
                         //
-                        leading: const Icon(
+                        leading: Icon(
                           CupertinoIcons.square_arrow_left,
-                          color: Colors.red,
+                          color: redLaLinguere,
                         ),
                         //
                         title: Text(
                           "Se déconnecter",
                           style: theme.textTheme.titleSmall!.copyWith(
-                            color: Colors.red,
+                            color: redLaLinguere,
                           ),
                         ),
                       ),
@@ -190,7 +191,7 @@ class _ProfileState extends State<Profile> {
                 Text(
                   "© ASCE La Linguere de Saint-Louis",
                   style: theme.textTheme.labelSmall!.copyWith(
-                    color: Colors.grey.shade400
+                    color: Colors.grey.shade400,
                   ),
                 ),
               ],

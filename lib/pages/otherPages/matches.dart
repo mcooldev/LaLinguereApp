@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:la_linguere/pages/otherPages/matches_tabview_pages/calendars_views/calendar_view.dart';
 import 'package:la_linguere/pages/otherPages/matches_tabview_pages/ranking_views/ranking_view.dart';
+import 'package:la_linguere/pages/otherPages/matches_tabview_pages/results_views/result_view.dart';
 import 'package:la_linguere/widgets/matches_page_widget/last_match_played.dart';
 import 'package:la_linguere/widgets/matches_page_widget/next_match.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +39,7 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
       await Future.wait([
         context.read<NextMatchProvider>().fetchNextMatch(),
         context.read<MatchesProvider>().fetchCalendar(),
+        context.read<MatchesProvider>().fetchResults(),
       ]);
       //
       if (!mounted) return;
@@ -83,6 +85,7 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
                       expandedHeight: 370,
                       pinned: true,
                       floating: false,
+                      centerTitle: true,
                       title: Text(
                         prov.appBarTitle,
                         style: const TextStyle(color: Colors.white),
@@ -134,6 +137,7 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
                                   ? LastMatchPlayed(
                                       theme: theme,
                                       isLoading: isLoading,
+                                      result: prov.linguereResult,
                                     )
                                   : ActualRankingWidget(
                                       rankingProvider: rankingProvider,
@@ -178,7 +182,7 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
                       decoration: BoxDecoration(
                         color: lightBg,
                         border: Border(
-                          bottom: BorderSide(width: 1, color: strokeColor),
+                          bottom: BorderSide(width: 1, color: lightStrokeColor),
                         ),
                       ),
                       child: Row(
@@ -225,7 +229,7 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
                           // Calendar view
                           const CalendarView(),
                           // Results view
-                          const Center(child: Text('Résultats')),
+                          const ResultView(),
                           // Ranking view
                           const RankingView(),
                         ],

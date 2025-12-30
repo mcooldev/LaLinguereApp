@@ -29,7 +29,7 @@ class TeamNextMatchWidget extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(90),
-              color: Colors.white24,
+              color: Colors.transparent,
             ),
             child: teamLogo == null
                 ? ClipRRect(

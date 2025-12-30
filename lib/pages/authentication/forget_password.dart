@@ -18,6 +18,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
     final number = PhoneNumber(isoCode: 'SN');
 
     // todo: create form key
+    // todo: Set the controllers for the form
 
     ///
     return GestureDetector(

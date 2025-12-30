@@ -29,7 +29,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           MaterialButton(
             onPressed: () {
               // todo: go straight home
-              Navigator.pushReplacementNamed(context, '/home');
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/home',
+                (route) => false,
+              );
             },
             color: Colors.white.withValues(alpha: 0.1),
             elevation: 0,

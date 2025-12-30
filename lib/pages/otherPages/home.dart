@@ -61,9 +61,12 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         //
         automaticallyImplyActions: false,
+        leading: const SizedBox.shrink(),
+        leadingWidth: 0,
 
         /// Greeting and name
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // logo linguere
             CircleAvatar(
@@ -175,7 +178,7 @@ class _HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(90),
                 border: Border.all(width: 1, color: lightStrokeColor),
               ),
-              child: Icon(CupertinoIcons.bag_badge_plus, color: darkBlue),
+              child: Icon(CupertinoIcons.cart_badge_plus, color: darkBlue),
             ),
           ),
         ],
@@ -280,7 +283,10 @@ class _HomeState extends State<Home> {
                           );
                         },
                         onTapSeeOtherMatch: () {
-                          navProvider.navigateWithFadeTransition(context, const Matches());
+                          navProvider.navigateWithFadeTransition(
+                            context,
+                            const Matches(),
+                          );
                         },
                       );
                     },
@@ -342,7 +348,7 @@ class _HomeState extends State<Home> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: prov.newsList.length,
                         separatorBuilder: (ctx, index) =>
-                        const SizedBox(height: 10),
+                            const SizedBox(height: 10),
                         itemBuilder: (ctx, index) {
                           //
                           final news = prov.newsList[index];
