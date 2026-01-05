@@ -1,4 +1,8 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/pages/authentication/forget_password.dart';
 import 'package:la_linguere/pages/authentication/login.dart';
@@ -10,6 +14,7 @@ import 'package:la_linguere/pages/otherPages/home.dart';
 import 'package:la_linguere/pages/otherPages/matches.dart';
 import 'package:la_linguere/pages/otherPages/support.dart';
 import 'package:la_linguere/providers/all_rank_provider.dart';
+import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:la_linguere/providers/foundation_provider.dart';
 import 'package:la_linguere/providers/matches_provider.dart';
 import 'package:la_linguere/providers/navigation_provider.dart';
@@ -31,12 +36,27 @@ final config = Config.instance;
 final fcm = FcmService.instance;
 
 ///
+@pragma('vm:entry-point')
+Future<void> fcmMessageHandler(RemoteMessage msg) async {
+  log("Message reçu en avant-plan : ${msg.messageId}");
+}
+
+///
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await FirebaseAuth.instance.setSettings(appVerificationDisabledForTesting: true);
+  //
+  FirebaseMessaging.onBackgroundMessage(fcmMessageHandler);
   //
   await fcm.initFcm();
+  await fcm.initNotification();
+  //final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+  //if (apnsToken != null) {
+  //  log("APNS token : $apnsToken");
+  //}
+  //
   runApp(const MyApp());
 }
 
@@ -62,10 +82,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NextMatchProvider()),
         //
         ChangeNotifierProvider(create: (_) => FoundationProvider()),
+        //
         ChangeNotifierProvider(create: (_) => MatchesProvider()),
         ChangeNotifierProvider(create: (_) => AllRankProvider()),
-        //
         ChangeNotifierProvider(create: (_) => SupportProvider()),
+        //
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
       ],
       child: MaterialApp(
         title: 'La Linguere',

@@ -58,10 +58,10 @@ class _SplashState extends State<Splash> {
             const SizedBox(height: 6),
             // logo name
             Text(
-              'La Linguere',
+              'Chargement en cours ...',
               style: Theme.of(
                 context,
-              ).textTheme.titleLarge!.copyWith(color: Colors.white),
+              ).textTheme.titleSmall!.copyWith(color: Colors.white),
             ),
           ],
         ),

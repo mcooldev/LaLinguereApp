@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
 import '../../utils/constants/app_colors.dart';
 
@@ -11,6 +13,24 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  ///
+  late String userVerificationId, userPhoneNumber;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    final arg = ModalRoute.of(context)?.settings.arguments as Map;
+    userVerificationId = arg["verificationId"];
+    userPhoneNumber = arg["phoneNumber"];
+    //
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      Provider.of<LoginProvider>(context, listen: false).setVerificationId(userVerificationId);
+    });
+    //
+    super.didChangeDependencies();
+  }
+
+  ///
   @override
   Widget build(BuildContext context) {
     ///
@@ -20,166 +40,197 @@ class _OtpScreenState extends State<OtpScreen> {
     // todo: create controller for otp text field
 
     ///
-    return Scaffold(
-      appBar: AppBar(),
+    return Consumer<LoginProvider>(
+      builder: (_, prov, _) {
+        return Scaffold(
+          appBar: AppBar(),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // headline
-            Text(
-              'Entrez les 4 chiffres  📩',
-              style: theme.textTheme.headlineLarge,
-            ),
-            const SizedBox(height: 12),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // headline
+                Text(
+                  'Entrez les 6 chiffres  📩',
+                  style: theme.textTheme.headlineLarge,
+                ),
+                const SizedBox(height: 12),
 
-            // body text
-            Text(
-              'Veuillez entrez le code envoyé par sms.',
-              style: theme.textTheme.bodyMedium!.copyWith(color: bodyText),
-            ),
-            const SizedBox(height: 32),
-
-            /// form
-            Form(
-              child: Column(
-                children: [
-                  /// otp text field
-                  Pinput(
-                    length: 6,
-                    showCursor: true,
-                    defaultPinTheme: PinTheme(
-                      width: 40,
-                      height: 48,
-                      textStyle: theme.textTheme.bodyMedium!.copyWith(
-                        color: bodyText,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(width: 1, color: strokeColor),
-                      ),
-                    ),
-                    focusNode: FocusNode(),
-                    separatorBuilder: (index) => const SizedBox(width: 8),
-                    cursor: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 9),
-                          width: 22,
-                          height: 1,
-                          color: blueLinguere,
+                // body text
+                Text.rich(
+                  TextSpan(
+                    text: 'Veuillez entrez le code envoyé par sms au .',
+                    children: [
+                      TextSpan(
+                        text: prov.maskPhoneNumber(userPhoneNumber),
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: bodyText,
                         ),
-                      ],
-                    ),
-                    focusedPinTheme: PinTheme(
-                      width: 40,
-                      height: 48,
-                      textStyle: theme.textTheme.bodyMedium!.copyWith(
-                        color: blueLinguere,
                       ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: blueLinguere),
-                      ),
-                    ),
-                    submittedPinTheme: PinTheme(
-                      width: 40,
-                      height: 48,
-                      textStyle: theme.textTheme.bodyMedium!.copyWith(
-                        color: darkBlue,
-                      ),
-                      decoration: BoxDecoration(
-                        color: lightBg,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: strokeColor),
-                      ),
-                    ),
-                    errorPinTheme: PinTheme(
-                      width: 40,
-                      height: 48,
-                      textStyle: theme.textTheme.bodyMedium!.copyWith(
-                        color: Colors.redAccent,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.redAccent),
-                      ),
-                    ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-
-                  /// send verification code btn
-                  MaterialButton(
-                    onPressed: () {
-                      // todo : send verification code
-                    },
-                    color: blueLinguere,
-                    height: 48,
-                    elevation: 0,
-                    minWidth: double.infinity,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(90),
-                    ),
-                    child: Text(
-                      'Envoyer le code de réinitialisation',
-                      style: theme.textTheme.labelLarge!.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    color: bodyText,
                   ),
-                  const SizedBox(height: 32),
+                ),
 
-                  /// Go create account
-                  GestureDetector(
-                    onTap: () {
-                      // todo: Go create account
-                      Navigator.pushReplacementNamed(context, "/forgetPassword");
-                      //
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text.rich(
-                          TextSpan(
-                            text: 'Pas le bon numéro ? ',
-                            style: theme.textTheme.labelLarge!.copyWith(
-                              color: bodyText,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: ' Changer maintenant',
-                                style: theme.textTheme.labelLarge!.copyWith(
-                                  color: blueLinguere,
-                                ),
-                              ),
-                            ],
+                const SizedBox(height: 32),
+
+                /// form
+                Form(
+                  key: prov.otpFormKey,
+                  child: Column(
+                    children: [
+                      /// otp text field
+                      Pinput(
+                        controller: prov.otpController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          signed: false,
+                          decimal: false,
+                        ),
+                        onCompleted: prov.updateOtpCode,
+                        length: 6,
+                        showCursor: true,
+                        defaultPinTheme: PinTheme(
+                          width: 40,
+                          height: 48,
+                          textStyle: theme.textTheme.bodyMedium!.copyWith(
+                            color: bodyText,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(width: 1, color: strokeColor),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  /// Resend code btn
-                  TextButton(
-                    onPressed: () {
-                      // todo: resend the code
-                    },
-                    child: Text(
-                      'Renvoyer le code',
-                      style: theme.textTheme.labelLarge!.copyWith(
-                        color: blueLinguere,
+                        focusNode: FocusNode(),
+                        separatorBuilder: (index) => const SizedBox(width: 8),
+                        cursor: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 9),
+                              width: 22,
+                              height: 1,
+                              color: blueLinguere,
+                            ),
+                          ],
+                        ),
+                        focusedPinTheme: PinTheme(
+                          width: 40,
+                          height: 48,
+                          textStyle: theme.textTheme.bodyMedium!.copyWith(
+                            color: blueLinguere,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: blueLinguere),
+                          ),
+                        ),
+                        submittedPinTheme: PinTheme(
+                          width: 40,
+                          height: 48,
+                          textStyle: theme.textTheme.bodyMedium!.copyWith(
+                            color: darkBlue,
+                          ),
+                          decoration: BoxDecoration(
+                            color: lightBg,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: strokeColor),
+                          ),
+                        ),
+                        errorPinTheme: PinTheme(
+                          width: 40,
+                          height: 48,
+                          textStyle: theme.textTheme.bodyMedium!.copyWith(
+                            color: Colors.redAccent,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.redAccent),
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 16),
+
+                      /// send verification code btn
+                      MaterialButton(
+                        onPressed: () async {
+                          await prov.verifyOtp(context);
+                        },
+                        color: blueLinguere,
+                        height: 48,
+                        elevation: 0,
+                        minWidth: double.infinity,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(90),
+                        ),
+                        child: prov.isLoading
+                            ? const CircularProgressIndicator.adaptive(
+                                backgroundColor: Colors.white,
+                              )
+                            : Text(
+                                'Se connecter maintenant',
+                                style: theme.textTheme.labelLarge!.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
+                      const SizedBox(height: 32),
+
+                      /// Go create account
+                      GestureDetector(
+                        onTap: () {
+                          // todo: Go create account
+                          Navigator.pushReplacementNamed(
+                            context,
+                            "/forgetPassword",
+                          );
+                          //
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                text: 'Pas le bon numéro ? ',
+                                style: theme.textTheme.labelLarge!.copyWith(
+                                  color: bodyText,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: ' Changer maintenant',
+                                    style: theme.textTheme.labelLarge!
+                                        .copyWith(color: blueLinguere),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      /// Resend code btn
+                      TextButton(
+                        onPressed: () {
+                          // todo: resend the code
+                        },
+                        child: Text(
+                          'Renvoyer le code',
+                          style: theme.textTheme.labelLarge!.copyWith(
+                            color: blueLinguere,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -11,8 +11,8 @@ class AllRankService {
     _dio = Dio(
       BaseOptions(
         baseUrl: "https://v3.football.api-sports.io",
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
         responseType: ResponseType.json,
       ),
     );

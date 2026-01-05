@@ -11,8 +11,8 @@ class ResultsService {
     _dio = Dio(
       BaseOptions(
         baseUrl: "https://www.thesportsdb.com/api/v1/json/$freeApiKey",
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
         responseType: ResponseType.json,
       ),
     );

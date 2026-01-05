@@ -13,8 +13,8 @@ class NewsService {
     _dio = Dio(
       BaseOptions(
         baseUrl: 'https://$authority',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
         responseType: ResponseType.json,
       ),
     );
