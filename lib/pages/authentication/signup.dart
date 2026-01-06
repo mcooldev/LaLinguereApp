@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
+import '../../main.dart';
+import '../../services/firebase_services/auth_service.dart';
 import '../../utils/constants/app_colors.dart';
 
 class Signup extends StatefulWidget {
@@ -320,8 +322,16 @@ class _SignupState extends State<Signup> {
 
             /// google sign in btn
             MaterialButton(
-              onPressed: () {
-                // todo: sign with google
+              onPressed: () async {
+                //
+                final auth = AuthService.instance;
+                await auth.signInWithGoogle();
+                //
+                navKey.currentState?.pushNamedAndRemoveUntil(
+                  "/home",
+                      (route) => false,
+                );
+                //
               },
               color: Colors.white,
               height: 48,

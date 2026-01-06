@@ -5,6 +5,7 @@ import 'package:la_linguere/providers/auth_providers/authentication_provider.dar
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -18,9 +19,6 @@ class _LoginState extends State<Login> {
     ///
     final theme = Theme.of(context);
     final number = PhoneNumber(isoCode: 'SN');
-
-    // todo: create form key
-    // todo: Set the controllers for the form
 
     ///
     return ChangeNotifierProvider(
@@ -73,12 +71,9 @@ class _LoginState extends State<Login> {
                               textFieldController:
                                   loginProv.phoneNumberController,
                               onInputChanged: (PhoneNumber number) async {
-                                // todo : update phone number
                                 loginProv.updatePhoneNumber(number);
                               },
-                              onInputValidated: (value) {
-                                // todo
-                              },
+                              onInputValidated: (value) {},
                               countrySelectorScrollControlled: true,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
@@ -170,7 +165,7 @@ class _LoginState extends State<Login> {
                     /// Go create account
                     GestureDetector(
                       onTap: () {
-                        // todo: Go create account
+                        //
                         Navigator.pushReplacementNamed(context, "/signup");
                         //
                       },
@@ -217,8 +212,9 @@ class _LoginState extends State<Login> {
 
                     /// google sign in btn
                     MaterialButton(
-                      onPressed: () {
-                        // todo: sign with google
+                      onPressed: () async {
+                        //
+                        await loginProv.signWithGoogle(context);
                       },
                       color: Colors.white,
                       height: 48,

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/auth_providers/authentication_provider.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({super.key});
@@ -15,6 +18,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     ///
     final size = MediaQuery.sizeOf(context);
     final theme = Theme.of(context);
+    final loginProvider = Provider.of<LoginProvider>(context, listen: false);
 
     ///
     return Scaffold(
@@ -100,8 +104,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
                 // google sign in btn
                 MaterialButton(
-                  onPressed: () {
-                    // todo: sign with google
+                  onPressed: () async {
+                    await loginProvider.signWithGoogle(context);
                   },
                   color: Colors.black,
                   height: 48,

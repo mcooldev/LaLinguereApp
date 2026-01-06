@@ -59,9 +59,10 @@ class _SplashState extends State<Splash> {
             // logo name
             Text(
               'Chargement en cours ...',
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall!.copyWith(color: Colors.white),
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),

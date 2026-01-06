@@ -21,6 +21,39 @@ abstract class AuthenticationProvider with ChangeNotifier {
   bool _hasThreeMonTh = false;
 
   bool get hasThreeMonth => _hasThreeMonTh;
+
+  /// Sign with google
+
+  Future<void> signWithGoogle(BuildContext context) async {
+    try {
+      //
+      final auth = AuthService.instance;
+      await auth.signInWithGoogle().then((_) {
+        //
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "✅🥳 • Connexion réussie",
+              style: GoogleFonts.manrope(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: blueLinguere,
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.symmetric(
+              horizontal: MediaQuery.sizeOf(context).width * 0.2,
+              vertical: 20,
+            ),
+            shape: const StadiumBorder(),
+          ),
+        );
+        navKey.currentState?.pushNamedAndRemoveUntil("/home", (route) => false);
+        //
+      });
+    } catch (e) {
+      log("Erreur lors de la connexion avec Google : ${e.toString()}");
+    }
+  }
 }
 
 /// Login provider
@@ -88,8 +121,7 @@ class LoginProvider extends AuthenticationProvider {
             navKey.currentState?.pushNamed(
               "/otpScreen",
               arguments: {
-                "verificationId":
-                verificationId,
+                "verificationId": verificationId,
                 "phoneNumber": userPhoneNumber,
               },
             );
@@ -171,11 +203,13 @@ class LoginProvider extends AuthenticationProvider {
               style: GoogleFonts.manrope(color: Colors.white),
               textAlign: TextAlign.center,
             ),
-            backgroundColor: darkBlue,
+            backgroundColor: blueLinguere,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(90.0),
+            margin: EdgeInsets.symmetric(
+              horizontal: MediaQuery.sizeOf(context).width * 0.2,
+              vertical: 20,
             ),
+            shape: const StadiumBorder(),
           ),
         );
         //

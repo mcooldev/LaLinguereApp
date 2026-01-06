@@ -46,7 +46,7 @@ Future<void> fcmMessageHandler(RemoteMessage msg) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // await FirebaseAuth.instance.setSettings(appVerificationDisabledForTesting: true);
+  /// await FirebaseAuth.instance.setSettings(appVerificationDisabledForTesting: true);
   //
   FirebaseMessaging.onBackgroundMessage(fcmMessageHandler);
   //

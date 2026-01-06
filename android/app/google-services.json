@@ -12,7 +12,20 @@
           "package_name": "com.example.la_linguere"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1051920178350-mej50jcd4kujl20ggohtscnpkupe0h28.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.la_linguere",
+            "certificate_hash": "363b62c480e508951825fa8422b0e4c85bfe460f"
+          }
+        },
+        {
+          "client_id": "1051920178350-0ce0ad2p818bkgbul154j2okr42rib0f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDTeLXrF9GpRSxDi_7e1qhOg34kfXk63oA"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1051920178350-0ce0ad2p818bkgbul154j2okr42rib0f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1051920178350-73hmjgfppko7a6aeqi7o1kvrhdfh8sp9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.laLinguere"
+              }
+            }
+          ]
         }
       }
     }
