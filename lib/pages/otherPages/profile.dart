@@ -1,8 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:la_linguere/main.dart';
+import 'package:la_linguere/models/user_model.dart';
+import 'package:la_linguere/providers/foundation_provider.dart';
+import 'package:la_linguere/services/firebase_services/auth_service.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:la_linguere/widgets/donate_widget.dart';
 import 'package:la_linguere/widgets/navigation_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/auth_providers/authentication_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -16,6 +24,29 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     ///
     final theme = Theme.of(context);
+    final loginProv = Provider.of<LoginProvider>(context, listen: false);
+    final foundationProv = Provider.of<FoundationProvider>(
+      context,
+      listen: false,
+    );
+    final authService = AuthService.instance;
+    Color membershipColor() {
+      final membershipType = loginProv.user?.membershipType;
+      if (membershipType == null) {
+        return bodyText;
+      }
+      switch (membershipType) {
+        case MembershipType.notSubscribed:
+          return bodyText;
+        case MembershipType.member:
+          return Colors.black;
+        case MembershipType.supporter:
+          return yellowLinguere;
+        case MembershipType.sambaLinguere:
+          return blueLinguere;
+      }
+    }
+
 
     ///
     return Scaffold(
@@ -60,12 +91,19 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(height: 10),
 
                 // User full name
-                Text("Mouhamadou Coulibaly", style: theme.textTheme.titleSmall),
+                Text(
+                  loginProv.user?.fullName ?? "Invité",
+                  style: theme.textTheme.titleSmall,
+                ),
                 const SizedBox(height: 4),
 
                 // user email or phone number
                 Text(
-                  "m.coulibaly@diotali.com",
+                  loginProv.userEmailOrPhoneText,
+                  softWrap: true,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 10),
@@ -74,16 +112,17 @@ class _ProfileState extends State<Profile> {
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
-                    vertical: 5,
+                    vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: lightBlueBg,
+                    color: membershipColor().withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Text(
-                    "Samba linguere",
+                    membershipTypeName[loginProv.user?.membershipType?.index ??
+                        0],
                     style: theme.textTheme.labelMedium!.copyWith(
-                      color: blueLinguere,
+                      color: membershipColor(),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -122,25 +161,40 @@ class _ProfileState extends State<Profile> {
                           color: strokeColor,
                         ),
                       ),
-                      Divider(thickness: 1, color: lightStrokeColor),
-                      // Forget password list tile
-                      ListTile(
-                        onTap: () {
-                          // todo: open forget password page
-                        },
-                        //
-                        leading: const Icon(CupertinoIcons.lock),
-                        //
-                        title: Text(
-                          "Mot de passe oublié",
-                          style: theme.textTheme.titleSmall,
+
+                      //
+                      if (loginProv.user?.isMember == false ||
+                          loginProv.signedAsGuest)
+                        Column(
+                          children: [
+                            Divider(thickness: 1, color: lightStrokeColor),
+                            // subscribe as member list tile
+                            ListTile(
+                              onTap: () {
+                                navKey.currentState?.pushNamedAndRemoveUntil(
+                                  "/foundation",
+                                  (route) => false,
+                                );
+                                foundationProv.setTabIndex(1);
+                              },
+                              //
+                              leading: const HugeIcon(
+                                icon: HugeIcons.strokeRoundedUserStar02,
+                                color: Colors.black,
+                              ),
+                              //
+                              title: Text(
+                                "S'abonner maintenant",
+                                style: theme.textTheme.titleSmall,
+                              ),
+                              //
+                              trailing: Icon(
+                                CupertinoIcons.chevron_right,
+                                color: strokeColor,
+                              ),
+                            ),
+                          ],
                         ),
-                        //
-                        trailing: Icon(
-                          CupertinoIcons.chevron_right,
-                          color: strokeColor,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -166,19 +220,36 @@ class _ProfileState extends State<Profile> {
                     children: [
                       // sign out list tile
                       ListTile(
-                        onTap: () {
-                          // todo: logout user
+                        onTap: () async {
+                          if (loginProv.signedAsGuest == true) {
+                            navKey.currentState?.pushNamed("/login");
+                          } else {
+                            //
+                            await authService.signOut();
+                            navKey.currentState?.pushNamedAndRemoveUntil(
+                              "/authGate",
+                              (route) => false,
+                            );
+                          }
                         },
                         //
                         leading: Icon(
-                          CupertinoIcons.square_arrow_left,
-                          color: redLaLinguere,
+                          loginProv.signedAsGuest == true
+                              ? CupertinoIcons.square_arrow_right
+                              : CupertinoIcons.square_arrow_left,
+                          color: loginProv.signedAsGuest
+                              ? blueLinguere
+                              : redLaLinguere,
                         ),
                         //
                         title: Text(
-                          "Se déconnecter",
+                          loginProv.signedAsGuest == true
+                              ? "Se connecter"
+                              : "Se déconnecter",
                           style: theme.textTheme.titleSmall!.copyWith(
-                            color: redLaLinguere,
+                            color: loginProv.signedAsGuest
+                                ? blueLinguere
+                                : redLaLinguere,
                           ),
                         ),
                       ),

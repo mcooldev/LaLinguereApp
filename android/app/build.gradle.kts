@@ -39,10 +39,31 @@ android {
         manifestPlaceholders["appAuthRedirectScheme"] = "com.example.la_linguere"
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = "upload"
+            keyPassword = "nassote5"
+            storeFile = file(System.getProperty("user.home") + "/la-linguere-release.keystore")
+            storePassword = "nassote5"
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.getByName("debug")
+
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+
+        debug {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -50,7 +71,6 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
-    implementation("com.google.firebase:firebase-appcheck-playintegrity:17.1.1")
 }
 
 flutter {

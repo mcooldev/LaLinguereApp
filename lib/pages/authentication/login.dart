@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
-
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -106,28 +104,7 @@ class _LoginState extends State<Login> {
                           const SizedBox(height: 12),
 
                           /// password text field
-                          //passwordTextFormField(theme),
                           const SizedBox(height: 16),
-
-                          /// forget password
-                          //Row(
-                          //  mainAxisAlignment: MainAxisAlignment.end,
-                          //  children: [
-                          //    TextButton(
-                          //      onPressed: () {
-                          //        // todo: go to forget password page
-                          //        Navigator.pushNamed(context, '/forgetPassword');
-                          //      },
-                          //      child: Text(
-                          //        'Mot de passe oublé',
-                          //        style: theme.textTheme.labelLarge!.copyWith(
-                          //          color: blueLinguere,
-                          //        ),
-                          //      ),
-                          //    ),
-                          //  ],
-                          //),
-                          //const SizedBox(height: 16),
 
                           /// sign in btn
                           MaterialButton(
@@ -136,7 +113,12 @@ class _LoginState extends State<Login> {
                                   loginProv.phoneNumber?.phoneNumber ?? "";
                               //
                               if (phoneToSend.isNotEmpty) {
-                                await loginProv.sendOtp(phoneToSend);
+                                await loginProv.sendOtp(
+                                  userPhoneNumber: phoneToSend,
+                                  formKey: loginProv.loginFormKey,
+                                  otpAccessType: "login",
+                                  userFullName: "",
+                                );
                               }
                             },
                             color: blueLinguere,
@@ -165,6 +147,7 @@ class _LoginState extends State<Login> {
                     /// Go create account
                     GestureDetector(
                       onTap: () {
+                        loginProv.phoneNumberController.clear();
                         //
                         Navigator.pushReplacementNamed(context, "/signup");
                         //
@@ -247,43 +230,6 @@ class _LoginState extends State<Login> {
           );
         },
       ),
-    );
-  }
-
-  TextFormField passwordTextFormField(ThemeData theme) {
-    return TextFormField(
-      //
-      onTapOutside: (pointer) {
-        FocusManager.instance.primaryFocus!.unfocus();
-      },
-      //
-      style: theme.textTheme.bodyMedium!.copyWith(color: bodyText),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(90)),
-        //
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(90),
-          borderSide: BorderSide(width: 1, color: strokeColor),
-        ),
-        //
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        //
-        hintText: '••••••••',
-        hintStyle: theme.textTheme.bodyMedium!.copyWith(
-          color: bodyText.withValues(alpha: 0.5),
-        ),
-
-        //
-        prefixIcon: Icon(CupertinoIcons.lock, size: 22, color: bodyText),
-        suffixIcon: IconButton(
-          onPressed: () {
-            // todo: toggle obscure text
-          },
-          icon: Icon(CupertinoIcons.eye, size: 22, color: blueLinguere),
-        ),
-      ),
-      //
-      obscureText: true,
     );
   }
 }

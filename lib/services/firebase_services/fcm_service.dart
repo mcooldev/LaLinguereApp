@@ -13,14 +13,16 @@ class FcmService {
   FirebaseMessaging fcm = FirebaseMessaging.instance;
 
   Future<void> initFcm() async {
+    RemoteMessage? remoteMessage = await fcm.getInitialMessage();
+    if (remoteMessage != null) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        handleNavigation(remoteMessage);
+      });
+    }
     //
     await Future.wait([
       //
-      fcm.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-      ),
+      fcm.requestPermission(alert: true, badge: true, sound: true),
       //
       fcm.subscribeToTopic("matches"),
       //
@@ -41,7 +43,9 @@ class FcmService {
       }
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage msg) {
-      handleNavigation(msg);
+      if (msg.notification != null) {
+        handleNavigation(msg);
+      }
     });
   }
 
@@ -72,7 +76,18 @@ class FcmService {
         android: initSettingsAndroid,
         iOS: initSettingsDarwin,
       );
-      await fln.initialize(initSettings);
+      await fln.initialize(
+        initSettings,
+        onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+        onDidReceiveNotificationResponse: (response) {
+          if (response.payload != null) {
+            navKey.currentState?.pushNamedAndRemoveUntil(
+              "/matches",
+              (route) => false,
+            );
+          }
+        },
+      );
     } catch (e) {
       log(e.toString());
     }
@@ -97,6 +112,7 @@ class FcmService {
       message.hashCode,
       message.notification!.title,
       message.notification!.body,
+      payload: "/matches",
       notificationDetails,
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:la_linguere/models/contact_model.dart';
 import 'package:la_linguere/models/next_match_model.dart';
@@ -30,6 +31,41 @@ class FoundationProvider with ChangeNotifier {
   set teamPageIndex(int index) {
     _teamPageIndex = index;
     notifyListeners();
+  }
+
+  int _tabIndex = 0;
+
+  int get tabIndex => _tabIndex;
+
+  TabController? _tabController;
+
+  TabController? get tabController => _tabController;
+
+  void setTabIndex(int index) {
+    _tabIndex = index;
+    _tabController?.animateTo(index);
+    notifyListeners();
+  }
+
+  void resetTabIndex() {
+    _tabIndex = 0;
+  }
+
+  void initTab(TickerProvider ticker) {
+    _tabController = TabController(
+      length: 4,
+      vsync: ticker,
+      initialIndex: _tabIndex,
+    );
+    _tabController?.addListener(handleTabSelection);
+    notifyListeners();
+  }
+
+  void handleTabSelection() {
+    if (_tabController != null) {
+      _tabIndex = _tabController!.index;
+      notifyListeners();
+    }
   }
 
   /// Logo partners
@@ -84,13 +120,13 @@ class FoundationProvider with ChangeNotifier {
       label: 'Adresse mail',
       content: 'infos@lalinguere.com',
       iconData: CupertinoIcons.at,
-      onTap: onTapMail
+      onTap: onTapMail,
     ),
     ContactModel(
       label: 'Téléphone',
       content: '+221 77 200 69 87',
       iconData: CupertinoIcons.phone,
-      onTap: onTapPhone
+      onTap: onTapPhone,
     ),
   ];
 

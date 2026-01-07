@@ -9,6 +9,7 @@ import 'package:la_linguere/providers/foundation_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth_providers/authentication_provider.dart';
 import '../../providers/navigation_provider.dart';
 import '../../providers/news_provider.dart';
 import '../../providers/next_match_provider.dart';
@@ -54,6 +55,7 @@ class _HomeState extends State<Home> {
     ///
     final theme = Theme.of(context);
     final navProvider = context.watch<NavigationProvider>();
+    final loginProvider = Provider.of<LoginProvider>(context);
 
     ///
     return Scaffold(
@@ -91,8 +93,8 @@ class _HomeState extends State<Home> {
                   style: theme.textTheme.labelLarge!.copyWith(color: bodyText),
                 ),
                 Text(
-                  // todo: get user name from current user
-                  'Mouhamadou',
+                  loginProvider.user?.fullName.toString().split(" ")[0] ??
+                      "Invité",
                   style: theme.textTheme.titleSmall!.copyWith(
                     fontWeight: FontWeight.w600,
                   ),

@@ -1,15 +1,17 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:la_linguere/pages/authentication/auth_gate.dart';
 import 'package:la_linguere/pages/authentication/forget_password.dart';
 import 'package:la_linguere/pages/authentication/login.dart';
 import 'package:la_linguere/pages/authentication/otp_screen.dart';
 import 'package:la_linguere/pages/authentication/signup.dart';
 import 'package:la_linguere/pages/onBoarding/on_boarding_screen.dart';
 import 'package:la_linguere/pages/onBoarding/splash.dart';
+import 'package:la_linguere/pages/otherPages/foundation.dart';
 import 'package:la_linguere/pages/otherPages/home.dart';
 import 'package:la_linguere/pages/otherPages/matches.dart';
 import 'package:la_linguere/pages/otherPages/support.dart';
@@ -38,7 +40,14 @@ final fcm = FcmService.instance;
 ///
 @pragma('vm:entry-point')
 Future<void> fcmMessageHandler(RemoteMessage msg) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  //
   log("Message reçu en avant-plan : ${msg.messageId}");
+}
+
+@pragma("vm:entry-point")
+void notificationTapBackground(NotificationResponse response) {
+  log("Notification tap background : ${response.payload}");
 }
 
 ///
@@ -46,16 +55,11 @@ Future<void> fcmMessageHandler(RemoteMessage msg) async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  /// await FirebaseAuth.instance.setSettings(appVerificationDisabledForTesting: true);
   //
   FirebaseMessaging.onBackgroundMessage(fcmMessageHandler);
   //
   await fcm.initFcm();
   await fcm.initNotification();
-  //final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-  //if (apnsToken != null) {
-  //  log("APNS token : $apnsToken");
-  //}
   //
   runApp(const MyApp());
 }
@@ -73,7 +77,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         //
-        ChangeNotifierProvider(create: (_) => OnBoardingProvider()),
+        ChangeNotifierProvider(
+          create: (_) => OnBoardingProvider()..setFirstTime(),
+        ),
         //
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         //
@@ -88,6 +94,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SupportProvider()),
         //
         ChangeNotifierProvider(create: (_) => LoginProvider()),
+        ChangeNotifierProvider(create: (_) => RegisterProvider()),
       ],
       child: MaterialApp(
         title: 'La Linguere',
@@ -102,10 +109,12 @@ class MyApp extends StatelessWidget {
           '/signup': (_) => const Signup(),
           '/forgetPassword': (_) => const ForgetPassword(),
           '/otpScreen': (_) => const OtpScreen(),
+          '/authGate': (_) => const AuthGate(),
           //
           '/home': (_) => const Home(),
           '/matches': (_) => const Matches(),
           '/support': (_) => const Support(),
+          '/foundation': (_) => const Foundation(),
         },
       ),
     );

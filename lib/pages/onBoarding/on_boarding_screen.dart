@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:la_linguere/main.dart';
+import 'package:la_linguere/providers/on_boarding_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +21,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     final size = MediaQuery.sizeOf(context);
     final theme = Theme.of(context);
     final loginProvider = Provider.of<LoginProvider>(context, listen: false);
+    final obProvider = Provider.of<OnBoardingProvider>(context, listen: false);
 
     ///
     return Scaffold(
@@ -32,10 +35,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         actions: [
           MaterialButton(
             onPressed: () {
-              // todo: go straight home
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/home',
+              loginProvider.setSignedAsGuest(true);
+              obProvider.completeOnBoarding();
+              navKey.currentState?.pushNamedAndRemoveUntil(
+                '/authGate',
                 (route) => false,
               );
             },

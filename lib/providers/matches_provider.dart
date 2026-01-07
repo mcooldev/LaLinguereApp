@@ -145,7 +145,6 @@ class MatchesProvider with ChangeNotifier {
 
   late ResultModel linguereResult;
 
-
   Future<void> fetchResults() async {
     if (_isLoaded) return;
     //
@@ -158,8 +157,8 @@ class MatchesProvider with ChangeNotifier {
       _resultsList.addAll(fetchedResults);
       //
       linguereResult = _resultsList.firstWhere(
-            (r) =>
-        (r.teamHomeName == "ASC Linguère" ||
+        (r) =>
+            (r.teamHomeName == "ASC Linguère" ||
             r.teamAwayName == "ASC Linguère"),
         orElse: () => ResultModel(
           teamHomeName: "",
@@ -186,8 +185,6 @@ class MatchesProvider with ChangeNotifier {
     _isLoaded = false;
     await fetchResults();
   }
-
-
 
   /// Disposer
   @override

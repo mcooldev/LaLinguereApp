@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/on_boarding_provider.dart';
 import '../../utils/constants/app_colors.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -14,20 +18,73 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   ///
-  late String userVerificationId, userPhoneNumber;
+  late String userVerificationId, userPhoneNumber, otpAccessType;
+  late String? userFullName;
+  bool _isInit = false;
+  Timer? _timer;
+  int _startTime = 60;
+  bool canResendCode = false;
+
+  void startTimer() {
+    canResendCode = false;
+    _startTime = 60;
+    //
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_startTime == 0) {
+        setState(() {
+          canResendCode = true;
+          timer.cancel();
+        });
+      } else {
+        setState(() {
+          _startTime--;
+        });
+      }
+    });
+  }
+
+  ///
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    final arg = ModalRoute.of(context)?.settings.arguments as Map;
-    userVerificationId = arg["verificationId"];
-    userPhoneNumber = arg["phoneNumber"];
-    //
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      Provider.of<LoginProvider>(context, listen: false).setVerificationId(userVerificationId);
-    });
-    //
+    ///
     super.didChangeDependencies();
+
+    ///
+    if (!_isInit) {
+      final arg = ModalRoute.of(context)?.settings.arguments as Map;
+      userVerificationId = arg["verificationId"];
+      userPhoneNumber = arg["phoneNumber"];
+      otpAccessType = arg["otpAccessType"];
+      userFullName = arg["fullName"] ?? "";
+
+      ///
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Provider.of<LoginProvider>(context, listen: false)
+          ..setVerificationId(userVerificationId)
+          ..setOtpAccessType(otpAccessType);
+        //
+        Provider.of<RegisterProvider>(
+          context,
+          listen: false,
+        ).setFullName(userFullName);
+      });
+
+      ///
+      _isInit = true;
+    }
   }
 
   ///
@@ -35,13 +92,14 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget build(BuildContext context) {
     ///
     final theme = Theme.of(context);
-
-    // todo: create form key
-    // todo: create controller for otp text field
+    final obProvider = Provider.of<OnBoardingProvider>(context, listen: false);
 
     ///
-    return Consumer<LoginProvider>(
-      builder: (_, prov, _) {
+    return Consumer2<LoginProvider, RegisterProvider>(
+      builder: (_, prov, registerProv, _) {
+        ///
+
+        ///
         return Scaffold(
           appBar: AppBar(),
 
@@ -71,9 +129,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                     ],
                   ),
-                  style: theme.textTheme.bodyMedium!.copyWith(
-                    color: bodyText,
-                  ),
+                  style: theme.textTheme.bodyMedium!.copyWith(color: bodyText),
                 ),
 
                 const SizedBox(height: 32),
@@ -90,6 +146,9 @@ class _OtpScreenState extends State<OtpScreen> {
                           signed: false,
                           decimal: false,
                         ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         onCompleted: prov.updateOtpCode,
                         length: 6,
                         showCursor: true,
@@ -153,10 +212,30 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      /// send verification code btn
+                      /// verification code btn
                       MaterialButton(
                         onPressed: () async {
-                          await prov.verifyOtp(context);
+                          await prov
+                              .verifyOtp(
+                                context: context,
+                                verifId: userVerificationId,
+                                otpAccessType: otpAccessType,
+                                userName: userFullName ?? "",
+                                userPhoneNumber: userPhoneNumber,
+                              )
+                              .then((_) {
+                                prov.otpController.clear();
+                                prov.phoneNumberController.clear();
+                                registerProv.registerPhoneNumberController
+                                    .clear();
+                                registerProv.fullNameController.clear();
+                                prov.setSignedAsGuest(false);
+                              });
+                          if (!context.mounted) return;
+                          if (prov.user != null) {
+                            await obProvider.completeOnBoarding();
+                          }
+                          //
                         },
                         color: blueLinguere,
                         height: 48,
@@ -200,8 +279,9 @@ class _OtpScreenState extends State<OtpScreen> {
                                 children: [
                                   TextSpan(
                                     text: ' Changer maintenant',
-                                    style: theme.textTheme.labelLarge!
-                                        .copyWith(color: blueLinguere),
+                                    style: theme.textTheme.labelLarge!.copyWith(
+                                      color: blueLinguere,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -213,11 +293,32 @@ class _OtpScreenState extends State<OtpScreen> {
 
                       /// Resend code btn
                       TextButton(
-                        onPressed: () {
-                          // todo: resend the code
-                        },
+                        onPressed: canResendCode
+                            ? () {
+                                if (otpAccessType.contains("login")) {
+                                  //
+                                  prov.sendOtp(
+                                    userPhoneNumber: userPhoneNumber,
+                                    formKey: prov.loginFormKey,
+                                    otpAccessType: "login",
+                                    userFullName: userFullName,
+                                  );
+                                  startTimer();
+                                } else {
+                                  prov.sendOtp(
+                                    userPhoneNumber: userPhoneNumber,
+                                    formKey: registerProv.registerFormKey,
+                                    otpAccessType: "register",
+                                    userFullName: userFullName,
+                                  );
+                                  startTimer();
+                                }
+                              }
+                            : null,
                         child: Text(
-                          'Renvoyer le code',
+                          canResendCode
+                              ? 'Renvoyer le code'
+                              : '00:${_startTime.toString().padLeft(2, '0')}',
                           style: theme.textTheme.labelLarge!.copyWith(
                             color: blueLinguere,
                           ),

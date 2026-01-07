@@ -3,13 +3,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBoardingProvider with ChangeNotifier {
   ///
-  bool isFirstTime = true;
+  bool _isFirstTime = true;
+  bool get isFirstTime => _isFirstTime;
+
 
   // Set the user see the on boarding
   Future<void> setFirstTime() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final haveSeen = prefs.getBool('onBoarding') ?? false;
-    isFirstTime = !haveSeen;
+    _isFirstTime = !haveSeen;
     notifyListeners();
   }
 
@@ -17,7 +19,7 @@ class OnBoardingProvider with ChangeNotifier {
   Future<void> completeOnBoarding() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onBoarding', true);
-    isFirstTime = false;
+    _isFirstTime = false;
     notifyListeners();
   }
 }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:la_linguere/main.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/on_boarding_provider.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -10,10 +14,15 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   ///
   Future<void> checkIfFirstTime(BuildContext context) async {
+    final prov = Provider.of<OnBoardingProvider>(context, listen: false);
+    await prov.setFirstTime();
     //
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 3), () {
       if (context.mounted) {
-        Navigator.pushReplacementNamed(context, '/onBoarding');
+        navKey.currentState?.pushNamedAndRemoveUntil(
+          "/authGate",
+          (route) => false,
+        );
       }
     });
   }

@@ -53,4 +53,12 @@ class AuthService {
       return null;
     }
   }
+
+  ///
+  Future<void> signOut() async {
+    await auth.signOut();
+    await gSignIn.signOut();
+  }
+
+
 }
