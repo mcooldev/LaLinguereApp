@@ -18,6 +18,7 @@ class UserModel {
     this.email,
     this.phoneNumber,
     this.lastLogin,
+    this.expiryDate,
     this.isMember = false,
     this.membershipType = MembershipType.notSubscribed,
     String? id,
@@ -26,7 +27,7 @@ class UserModel {
        createdAt = createdAt ?? Timestamp.now();
 
   final String? id, fullName, email, phoneNumber;
-  final Timestamp? createdAt, lastLogin;
+  final Timestamp? createdAt, lastLogin, expiryDate;
   bool isMember;
   MembershipType? membershipType;
 
@@ -36,8 +37,9 @@ class UserModel {
     "email": email,
     "phoneNumber": phoneNumber,
     "isMember": isMember,
-    "membershipType": membershipType?.index,
+    "membershipType": membershipType?.name,
     "createdAt": createdAt,
+    "expiryDate": expiryDate,
     "lastLogin": lastLogin,
   };
 
@@ -49,8 +51,17 @@ class UserModel {
     isMember: json["isMember"],
     membershipType: json["membershipType"] == null
         ? MembershipType.notSubscribed
-        : MembershipType.values[json["membershipType"]],
+        : MembershipType.values.firstWhere(
+            (element) => element.name == json["membershipType"].toString(),
+            orElse: () => MembershipType.notSubscribed,
+          ),
     createdAt: json["createdAt"],
+    expiryDate: json["expiryDate"],
     lastLogin: json["lastLogin"],
   );
+
+  bool get hasExpired {
+    if (!isMember && expiryDate == null) return false;
+    return expiryDate!.toDate().isAfter(DateTime.now());
+  }
 }

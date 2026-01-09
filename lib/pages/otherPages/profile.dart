@@ -24,18 +24,22 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     ///
     final theme = Theme.of(context);
+    //
     final loginProv = Provider.of<LoginProvider>(context, listen: false);
+    //
     final foundationProv = Provider.of<FoundationProvider>(
       context,
       listen: false,
     );
     final authService = AuthService.instance;
+    //
+    final user = loginProv.user;
+    //
     Color membershipColor() {
-      final membershipType = loginProv.user?.membershipType;
-      if (membershipType == null) {
+      if (user == null || user.hasExpired || user.isMember == false) {
         return bodyText;
       }
-      switch (membershipType) {
+      switch (user.membershipType) {
         case MembershipType.notSubscribed:
           return bodyText;
         case MembershipType.member:
@@ -44,9 +48,17 @@ class _ProfileState extends State<Profile> {
           return yellowLinguere;
         case MembershipType.sambaLinguere:
           return blueLinguere;
+        default:
+          return bodyText;
       }
     }
 
+    //
+    final isActive = user != null && !user.hasExpired;
+    final String labelText = isActive
+        ? membershipTypeName[user.membershipType?.index ?? 0]
+        : membershipTypeName[0];
+    //
 
     ///
     return Scaffold(
@@ -117,14 +129,31 @@ class _ProfileState extends State<Profile> {
                   decoration: BoxDecoration(
                     color: membershipColor().withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Text(
-                    membershipTypeName[loginProv.user?.membershipType?.index ??
-                        0],
-                    style: theme.textTheme.labelMedium!.copyWith(
-                      color: membershipColor(),
-                      fontWeight: FontWeight.w600,
+                    border: Border.all(
+                      width: 1,
+                      color: membershipColor().withValues(alpha: 0.3),
                     ),
+                  ),
+                  child: Row(
+                    children: [
+                      if (isActive &&
+                          user.membershipType != MembershipType.notSubscribed)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: Icon(
+                            Icons.verified,
+                            size: 14,
+                            color: membershipColor(),
+                          ),
+                        ),
+                      Text(
+                        labelText,
+                        style: theme.textTheme.labelMedium!.copyWith(
+                          color: membershipColor(),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -136,7 +165,6 @@ class _ProfileState extends State<Profile> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(width: 1, color: lightStrokeColor),
                   ),
                   child: ListView(
                     shrinkWrap: true,
@@ -163,7 +191,7 @@ class _ProfileState extends State<Profile> {
                       ),
 
                       //
-                      if (loginProv.user?.isMember == false ||
+                      if (isActive ||
                           loginProv.signedAsGuest)
                         Column(
                           children: [
@@ -223,7 +251,7 @@ class _ProfileState extends State<Profile> {
                         onTap: () async {
                           if (loginProv.signedAsGuest == true) {
                             navKey.currentState?.pushNamed("/login");
-                          } else {
+                          } else if (loginProv.user != null) {
                             //
                             await authService.signOut();
                             navKey.currentState?.pushNamedAndRemoveUntil(

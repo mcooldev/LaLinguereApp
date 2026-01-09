@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:la_linguere/main.dart';
 import 'package:la_linguere/models/news_model.dart';
+import 'package:la_linguere/pages/membership_payment_pages/check_payment_page.dart';
 import 'package:la_linguere/pages/otherPages/foundation.dart';
 import 'package:la_linguere/pages/otherPages/matches.dart';
 import 'package:la_linguere/pages/otherPages/news_details.dart';
 import 'package:la_linguere/providers/foundation_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../providers/auth_providers/authentication_provider.dart';
 import '../../providers/navigation_provider.dart';
@@ -35,9 +38,13 @@ class _HomeState extends State<Home> {
 
     ///
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      checkPendingPayment();
+      //
       if (!mounted) return;
       //
       await Future.wait([
+        context.read<LoginProvider>().checkAndResetMembership(),
+        //
         context.read<NextMatchProvider>().fetchNextMatch(),
         context.read<RankingProvider>().fetchRanking(),
         context.read<NewsProvider>().fetchAllNews(),
@@ -47,6 +54,28 @@ class _HomeState extends State<Home> {
       context.read<NavigationProvider>().currentIndex = 0;
       context.read<FoundationProvider>().teamPageIndex = 0;
     });
+  }
+
+  Future<void> checkPendingPayment() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final requestId = prefs.getString("request_id");
+    final requestIdDonation = prefs.getString("request_id_donation");
+    //
+    if (requestId != null) {
+      navKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => const CheckPaymentPage(isDonation: false),
+        ),
+      );
+    }
+    //
+    else if (requestIdDonation != null) {
+      navKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => const CheckPaymentPage(isDonation: true),
+        ),
+      );
+    }
   }
 
   ///

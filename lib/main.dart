@@ -14,11 +14,13 @@ import 'package:la_linguere/pages/onBoarding/splash.dart';
 import 'package:la_linguere/pages/otherPages/foundation.dart';
 import 'package:la_linguere/pages/otherPages/home.dart';
 import 'package:la_linguere/pages/otherPages/matches.dart';
+import 'package:la_linguere/pages/otherPages/profile.dart';
 import 'package:la_linguere/pages/otherPages/support.dart';
 import 'package:la_linguere/providers/all_rank_provider.dart';
 import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:la_linguere/providers/foundation_provider.dart';
 import 'package:la_linguere/providers/matches_provider.dart';
+import 'package:la_linguere/providers/membership_provider.dart';
 import 'package:la_linguere/providers/navigation_provider.dart';
 import 'package:la_linguere/providers/news_provider.dart';
 import 'package:la_linguere/providers/next_match_provider.dart';
@@ -95,6 +97,8 @@ class MyApp extends StatelessWidget {
         //
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => RegisterProvider()),
+        //
+        ChangeNotifierProvider(create: (_) => MembershipProvider()),
       ],
       child: MaterialApp(
         title: 'La Linguere',
@@ -113,8 +117,10 @@ class MyApp extends StatelessWidget {
           //
           '/home': (_) => const Home(),
           '/matches': (_) => const Matches(),
+          '/profile': (_) => const Profile(),
           '/support': (_) => const Support(),
           '/foundation': (_) => const Foundation(),
+          //
         },
       ),
     );

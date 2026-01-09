@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:la_linguere/models/user_model.dart';
+import 'package:la_linguere/pages/membership_payment_pages/payment_page.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +15,25 @@ class MembershipPage extends StatefulWidget {
 }
 
 class _MembershipPageState extends State<MembershipPage> {
+  ///
+  void showModalPayment(
+    BuildContext context, {
+    required String subsName,
+    required String subsAmount,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (context) => PaymentPage(
+        subsName: subsName,
+        subsAmount: subsAmount,
+        isDonation: false,
+      ),
+    );
+  }
+
+  ///
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -73,14 +94,19 @@ class _MembershipPageState extends State<MembershipPage> {
                   advantageIconColor: yellowLinguere,
                   gradient: blackGradient,
                   imageMembership: 'assets/member_image.png',
-                  titleMembership: 'membre',
+                  titleMembership:
+                      membershipTypeName[MembershipType.member.index],
                   priceMembership: '24000',
                   advantagesMembership: [
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                   ],
                   onTapMembership: () {
-                    // todo: subscribe to membership
+                    showModalPayment(
+                      context,
+                      subsName: membershipTypeName[MembershipType.member.index],
+                      subsAmount: '24000',
+                    );
                   },
                 ),
                 const SizedBox(height: 16),
@@ -95,14 +121,20 @@ class _MembershipPageState extends State<MembershipPage> {
                   advantageIconColor: Colors.white,
                   gradient: yellowGradient,
                   imageMembership: 'assets/member_supporter.png',
-                  titleMembership: 'supporter',
+                  titleMembership:
+                      membershipTypeName[MembershipType.supporter.index],
                   priceMembership: '19000',
                   advantagesMembership: [
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                   ],
                   onTapMembership: () {
-                    // todo: subscribe to membership
+                    showModalPayment(
+                      context,
+                      subsName:
+                          membershipTypeName[MembershipType.supporter.index],
+                      subsAmount: '19000',
+                    );
                   },
                 ),
                 const SizedBox(height: 16),
@@ -117,14 +149,22 @@ class _MembershipPageState extends State<MembershipPage> {
                   advantageIconColor: yellowLinguere,
                   gradient: blueGradient,
                   imageMembership: 'assets/member_sambalinguere.png',
-                  titleMembership: 'samba linguere',
+                  titleMembership:
+                      membershipTypeName[MembershipType.sambaLinguere.index],
                   priceMembership: '12000',
                   advantagesMembership: [
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                   ],
                   onTapMembership: () {
-                    // todo: subscribe to membership
+                    showModalPayment(
+                      context,
+                      subsName:
+                          membershipTypeName[MembershipType
+                              .sambaLinguere
+                              .index],
+                      subsAmount: '12000',
+                    );
                   },
                 ),
               ],

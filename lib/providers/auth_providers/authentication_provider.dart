@@ -464,8 +464,56 @@ class LoginProvider extends AuthenticationProvider {
     }
   }
 
-  Future<void> updateUserDataMembership(String newMembership) async {
-    // todo: update user membership in firestore
+  Future<void> updateUserDataMembership(MembershipType newMembership) async {
+    try {
+      final now = DateTime.now();
+      final oneYearLater = now.add(const Duration(days: 365));
+      //
+      final userCollections = firestoreService.firestore
+          .collection('users')
+          .doc(auth.currentUser?.uid);
+
+      await userCollections.update({
+        'membershipType': newMembership.name,
+        'isMember': true,
+        'membershipUpdatedAt': FieldValue.serverTimestamp(),
+        'expiryDate': Timestamp.fromDate(oneYearLater),
+      });
+      //
+      notifyListeners();
+    } catch (e) {
+      log(
+        "Erreur lors de la mise à jour du statut membre de l'utilisateur : ${e.toString()}",
+      );
+    }
+  }
+
+  Future<void> checkAndResetMembership() async {
+    if (user == null || signedAsGuest == true || user?.isMember == false) {
+      return;
+    }
+    //
+    if (user!.hasExpired) {
+      try {
+        final userCollections = firestoreService.firestore
+            .collection('users')
+            .doc(auth.currentUser?.uid);
+        await userCollections.update({
+          'membershipType': MembershipType.notSubscribed.name,
+          'isMember': false,
+          'membershipUpdatedAt': FieldValue.serverTimestamp(),
+          'expiryDate': null,
+        });
+        //
+        notifyListeners();
+      } catch (e) {
+        log(
+          "Erreur lors de la mise à jour du statut membre de l'utilisateur : ${e.toString()}",
+        );
+      }
+    } else {
+      log("L'abonnement est en cours de validité");
+    }
   }
 
   ///
