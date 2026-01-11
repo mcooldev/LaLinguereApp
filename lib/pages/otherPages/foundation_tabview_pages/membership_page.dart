@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:la_linguere/models/user_model.dart';
 import 'package:la_linguere/pages/membership_payment_pages/payment_page.dart';
+import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -36,10 +37,11 @@ class _MembershipPageState extends State<MembershipPage> {
   ///
   @override
   Widget build(BuildContext context) {
-    return Consumer(
+    return Consumer<LoginProvider>(
       builder: (_, prov, _) {
         ///
         final theme = Theme.of(context);
+        final isActive = prov.user != null && !prov.user!.hasExpired;
 
         ///
         return Scaffold(
@@ -101,13 +103,15 @@ class _MembershipPageState extends State<MembershipPage> {
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                   ],
-                  onTapMembership: () {
-                    showModalPayment(
-                      context,
-                      subsName: membershipTypeName[MembershipType.member.index],
-                      subsAmount: '24000',
-                    );
-                  },
+                  isActive: isActive,
+                  onTapMembership: isActive
+                      ? null
+                      : () => showModalPayment(
+                          context,
+                          subsName:
+                              membershipTypeName[MembershipType.member.index],
+                          subsAmount: '24000',
+                        ),
                 ),
                 const SizedBox(height: 16),
                 // supporter
@@ -128,14 +132,17 @@ class _MembershipPageState extends State<MembershipPage> {
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                   ],
-                  onTapMembership: () {
-                    showModalPayment(
-                      context,
-                      subsName:
-                          membershipTypeName[MembershipType.supporter.index],
-                      subsAmount: '19000',
-                    );
-                  },
+                  isActive: isActive,
+                  onTapMembership: isActive
+                      ? null
+                      : () => showModalPayment(
+                          context,
+                          subsName:
+                              membershipTypeName[MembershipType
+                                  .supporter
+                                  .index],
+                          subsAmount: '19000',
+                        ),
                 ),
                 const SizedBox(height: 16),
                 // samba linguere
@@ -156,16 +163,17 @@ class _MembershipPageState extends State<MembershipPage> {
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                   ],
-                  onTapMembership: () {
-                    showModalPayment(
-                      context,
-                      subsName:
-                          membershipTypeName[MembershipType
-                              .sambaLinguere
-                              .index],
-                      subsAmount: '12000',
-                    );
-                  },
+                  isActive: isActive,
+                  onTapMembership: isActive
+                      ? null
+                      : () => showModalPayment(
+                          context,
+                          subsName:
+                              membershipTypeName[MembershipType
+                                  .sambaLinguere
+                                  .index],
+                          subsAmount: '12000',
+                        ),
                 ),
               ],
             ),

@@ -11,6 +11,7 @@ class MembershipWidget extends StatelessWidget {
     required this.advantagesMembership,
     required this.onTapMembership,
     required this.gradient,
+    required this.isActive,
     required this.titleMembershipColor,
     required this.priceMembershipColor,
     required this.advantageColor,
@@ -23,8 +24,10 @@ class MembershipWidget extends StatelessWidget {
 
   final String imageMembership, titleMembership, priceMembership;
   final List<String> advantagesMembership;
-  final void Function() onTapMembership;
+  final void Function()? onTapMembership;
   final Gradient gradient;
+
+  final bool isActive;
 
   final Color titleMembershipColor,
       priceMembershipColor,
@@ -145,7 +148,7 @@ class MembershipWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(90),
                   ),
                   child: Text(
-                    'Souscrire à l’abonnement',
+                    isActive ? 'Abonnement actif' : 'Souscrire à l’abonnement',
                     style: theme.textTheme.labelLarge!.copyWith(
                       color: onTapMembershipTextColor,
                     ),

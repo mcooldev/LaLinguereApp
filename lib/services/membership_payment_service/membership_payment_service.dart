@@ -135,6 +135,7 @@ class MembershipPaymentService {
               );
             }
           } else if (index == 2) {
+            navKey.currentState?.pop();
             navKey.currentState?.push(
               MaterialPageRoute(
                 builder: (context) => CardPaymentView(webUrl: paymentUrl),
@@ -142,6 +143,7 @@ class MembershipPaymentService {
             );
           } else {
             if (!context.mounted) return;
+            navKey.currentState?.pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: redLaLinguere,
@@ -162,6 +164,7 @@ class MembershipPaymentService {
     } catch (e) {
       log(e.toString());
       if (!context.mounted) return;
+      navKey.currentState?.pop();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: redLaLinguere,

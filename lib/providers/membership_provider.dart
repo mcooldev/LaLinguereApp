@@ -74,8 +74,10 @@ class MembershipProvider with ChangeNotifier {
       );
       return;
     }
+    //
     _isLoading = true;
     notifyListeners();
+    //
     try {
       if (!logProvider.signedAsGuest && logProvider.user != null) {
         await MembershipPaymentService.instance.makePayment(
