@@ -124,7 +124,7 @@ class _LoginState extends State<Login> {
                             color: blueLinguere,
                             height: 48,
                             elevation: 0,
-                            minWidth: double.infinity,
+                            minWidth: loginProv.isLoading ? 48 : double.infinity,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(90),
                             ),

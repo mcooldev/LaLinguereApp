@@ -32,11 +32,8 @@ class MembershipProvider with ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  final cardFormKey = GlobalKey<FormState>();
-  final cardNameController = TextEditingController();
-  final cardNumberController = TextEditingController();
-  final cardDateController = TextEditingController();
-  final cardCvvController = TextEditingController();
+  final donationFormKey = GlobalKey<FormState>();
+  final amountController = TextEditingController();
 
   ///
 
@@ -57,6 +54,8 @@ class MembershipProvider with ChangeNotifier {
     required String amount,
     required bool isDonation,
   }) async {
+    if (isLoading) return;
+    //
     if (_paymentIndex == -1) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -75,20 +74,37 @@ class MembershipProvider with ChangeNotifier {
       return;
     }
     //
+    if (logProvider.signedAsGuest && logProvider.user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: redLaLinguere,
+          behavior: SnackBarBehavior.floating,
+          shape: const StadiumBorder(),
+          duration: const Duration(seconds: 3),
+          content: Text(
+            "⚠️ • Connectez-vous pour effectuer ce paiement",
+            textAlign: TextAlign.center,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium!.copyWith(color: Colors.white),
+          ),
+        ),
+      );
+      return;
+    }
+    //
     _isLoading = true;
     notifyListeners();
     //
     try {
-      if (!logProvider.signedAsGuest && logProvider.user != null) {
-        await MembershipPaymentService.instance.makePayment(
-          context: context,
-          phoneNumber: phoneNumber.toString(),
-          amount: amount,
-          paymentMethod: _partnerCodes[_paymentIndex],
-          index: _paymentIndex,
-          isDonation: isDonation,
-        );
-      }
+      await MembershipPaymentService.instance.makePayment(
+        context: context,
+        phoneNumber: phoneNumber.toString(),
+        amount: amount,
+        paymentMethod: _partnerCodes[_paymentIndex],
+        index: _paymentIndex,
+        isDonation: isDonation,
+      );
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -96,8 +112,9 @@ class MembershipProvider with ChangeNotifier {
           backgroundColor: redLaLinguere,
           behavior: SnackBarBehavior.floating,
           shape: const StadiumBorder(),
+          duration: const Duration(seconds: 3),
           content: Text(
-            "⚠️ • veuillez vous connecter pour effectuer ce paiement",
+            "⚠️ • Erreur lors du paiement",
             textAlign: TextAlign.center,
             style: Theme.of(
               context,
@@ -114,10 +131,7 @@ class MembershipProvider with ChangeNotifier {
   ///
   @override
   void dispose() {
-    cardNameController.dispose();
-    cardNumberController.dispose();
-    cardDateController.dispose();
-    cardCvvController.dispose();
+    amountController.dispose();
     super.dispose();
   }
 }

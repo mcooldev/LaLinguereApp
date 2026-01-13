@@ -62,6 +62,6 @@ class UserModel {
 
   bool get hasExpired {
     if (!isMember && expiryDate == null) return false;
-    return expiryDate!.toDate().isAfter(DateTime.now());
+    return expiryDate!.toDate().isBefore(DateTime.now());
   }
 }

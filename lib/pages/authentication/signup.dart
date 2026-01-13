@@ -163,12 +163,12 @@ class _SignupState extends State<Signup> {
                         color: blueLinguere,
                         height: 48,
                         elevation: 0,
-                        minWidth: double.infinity,
+                        minWidth: prov.isLoading ? 48 : double.infinity,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(90),
                         ),
                         child: prov.isLoading
-                            ? const CircularProgressIndicator(
+                            ? const CircularProgressIndicator.adaptive(
                                 backgroundColor: Colors.white,
                               )
                             : Text(

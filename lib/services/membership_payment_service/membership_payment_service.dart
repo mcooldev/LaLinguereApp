@@ -32,6 +32,7 @@ class MembershipPaymentService {
 
   final tokenUrlPath = "application/session/token";
   final paymentUrlPath = "application/payment";
+  final sessionUrlPath = "application/command-by-remoteTrxId";
 
   final uuid = const Uuid();
 
@@ -103,11 +104,11 @@ class MembershipPaymentService {
           "amount": int.parse(amount),
           "codeService": "TICKET",
           "currencyCode": "XOF",
-          "errorUrl": "lalinguere://error",
+          "errorUrl": "https://lalinguere.net/error",
           "partnerCode": paymentMethod,
           "phoneNumber": phoneNumber,
           "requestId": requestId,
-          "successUrl": "lalinguere://success",
+          "successUrl": "https://lalinguere.net/success",
         },
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
@@ -149,6 +150,7 @@ class MembershipPaymentService {
                 backgroundColor: redLaLinguere,
                 behavior: SnackBarBehavior.floating,
                 shape: const StadiumBorder(),
+                duration: const Duration(seconds: 3),
                 content: Text(
                   "⚠️ • Erreur lors du paiement",
                   textAlign: TextAlign.center,
@@ -170,6 +172,7 @@ class MembershipPaymentService {
           backgroundColor: redLaLinguere,
           behavior: SnackBarBehavior.floating,
           shape: const StadiumBorder(),
+          duration: const Duration(seconds: 3),
           content: Text(
             "⚠️ • Erreur lors du paiement",
             textAlign: TextAlign.center,
@@ -189,32 +192,39 @@ class MembershipPaymentService {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       //
-      final token = prefs.getString("token_payment");
-      final tokenDonation = prefs.getString("token_payment_donation");
+      final token = prefs.getString(isDonation ? "token_payment_donation" : "token_payment");
       final requestId = prefs.getString(
         isDonation ? "request_id_donation" : "request_id",
       );
       //
+      if (token == null || requestId == null) {
+        log("Erreur: Identifiants de transaction introuvables.");
+        return;
+      }  
+      //
       final response = await _dio.get(
-        "session/$requestId", // todo : check this url
+        sessionUrlPath,
+        queryParameters: {"remoteTrxId": requestId},
         options: Options(
           headers: {
-            "Authorization": "Bearer ${isDonation ? tokenDonation : token}",
+            "Authorization": "Bearer $token",
           },
         ),
       );
       if (response.statusCode == 200 && response.data["status"] == "SUCCESS") {
         //
         final data = response.data["data"];
-        final paymentStatus = data["status"] as String;
+        final paymentStatus = data["status"] as String?;
+        final remoteTrxId = data["remoteTrxId"] as String?;
         //
-        if (paymentStatus == "PENDING") {
+        if (paymentStatus == "PENDING" || paymentStatus == null) {
           if (!context.mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: redLaLinguere,
               behavior: SnackBarBehavior.floating,
               shape: const StadiumBorder(),
+              duration: const Duration(seconds: 3),
               content: Text(
                 "⚠️ • Paiement en attente de confirmation",
                 textAlign: TextAlign.center,
@@ -224,8 +234,8 @@ class MembershipPaymentService {
               ),
             ),
           );
-        } else if (paymentStatus == "SUCCESS") {
-          await prefs.remove("request_id");
+        } else if (paymentStatus == "SUCCESS" && remoteTrxId == requestId) {
+          await prefs.remove(isDonation ? "request_id_donation" : "request_id");
           await prefs.remove(
             isDonation ? "token_payment_donation" : "token_payment",
           );
@@ -261,6 +271,7 @@ class MembershipPaymentService {
             backgroundColor: redLaLinguere,
             behavior: SnackBarBehavior.floating,
             shape: const StadiumBorder(),
+            duration: const Duration(seconds: 3),
             content: Text(
               "⚠️ • Impossible de vérifier le paiement.",
               textAlign: TextAlign.center,
@@ -279,6 +290,7 @@ class MembershipPaymentService {
           backgroundColor: redLaLinguere,
           behavior: SnackBarBehavior.floating,
           shape: const StadiumBorder(),
+          duration: const Duration(seconds: 3),
           content: Text(
             "⚠️ • Impossible de vérifier le paiement. Veuillez contacter le support",
             textAlign: TextAlign.center,

@@ -224,6 +224,11 @@ abstract class AuthenticationProvider with ChangeNotifier {
             );
           }
           otpController.clear();
+          //
+          navKey.currentState?.pushNamedAndRemoveUntil(
+            "/authGate",
+                (route) => false,
+          );
         }
 
         ///
@@ -318,11 +323,11 @@ abstract class AuthenticationProvider with ChangeNotifier {
 
   Future<void> sendOtp({
     required String userPhoneNumber,
-    required GlobalKey<FormState> formKey,
+    GlobalKey<FormState>? formKey,
     required String otpAccessType,
     required String? userFullName,
   }) async {
-    if (formKey.currentState != null && !formKey.currentState!.validate()) {
+    if (formKey != null && !formKey.currentState!.validate()) {
       return;
     }
     _isLoading = true;

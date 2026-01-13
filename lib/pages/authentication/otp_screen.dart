@@ -223,24 +223,24 @@ class _OtpScreenState extends State<OtpScreen> {
                                 userName: userFullName ?? "",
                                 userPhoneNumber: userPhoneNumber,
                               )
-                              .then((_) {
+                              .then((_) async {
                                 prov.otpController.clear();
                                 prov.phoneNumberController.clear();
                                 registerProv.registerPhoneNumberController
                                     .clear();
                                 registerProv.fullNameController.clear();
                                 prov.setSignedAsGuest(false);
+                                //
+                                if (!context.mounted) return;
+                                if (prov.user != null) {
+                                  await obProvider.completeOnBoarding();
+                                }
                               });
-                          if (!context.mounted) return;
-                          if (prov.user != null) {
-                            await obProvider.completeOnBoarding();
-                          }
-                          //
                         },
                         color: blueLinguere,
                         height: 48,
                         elevation: 0,
-                        minWidth: double.infinity,
+                        minWidth: prov.isLoading ? 48 : double.infinity,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(90),
                         ),
@@ -299,7 +299,6 @@ class _OtpScreenState extends State<OtpScreen> {
                                   //
                                   prov.sendOtp(
                                     userPhoneNumber: userPhoneNumber,
-                                    formKey: prov.loginFormKey,
                                     otpAccessType: "login",
                                     userFullName: userFullName,
                                   );
@@ -307,7 +306,6 @@ class _OtpScreenState extends State<OtpScreen> {
                                 } else {
                                   prov.sendOtp(
                                     userPhoneNumber: userPhoneNumber,
-                                    formKey: registerProv.registerFormKey,
                                     otpAccessType: "register",
                                     userFullName: userFullName,
                                   );
@@ -320,7 +318,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               ? 'Renvoyer le code'
                               : '00:${_startTime.toString().padLeft(2, '0')}',
                           style: theme.textTheme.labelLarge!.copyWith(
-                            color: blueLinguere,
+                            color: canResendCode ? blueLinguere : bodyText,
                           ),
                         ),
                       ),

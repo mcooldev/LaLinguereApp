@@ -34,11 +34,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="lalinguere" android:host="error"/>
                 <data android:scheme="lalinguere" android:host="success"/>
+
+                <data android:scheme="https" android:host="lalinguere.net"/>
+                <data android:scheme="http" android:host="lalinguere.net"/>
             </intent-filter>
 
         </activity>

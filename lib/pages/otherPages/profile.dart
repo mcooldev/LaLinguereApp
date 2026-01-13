@@ -129,12 +129,9 @@ class _ProfileState extends State<Profile> {
                   decoration: BoxDecoration(
                     color: membershipColor().withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(100),
-                    border: Border.all(
-                      width: 1,
-                      color: membershipColor().withValues(alpha: 0.3),
-                    ),
                   ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       if (isActive &&
                           user.membershipType != MembershipType.notSubscribed)
@@ -165,6 +162,7 @@ class _ProfileState extends State<Profile> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(6),
+                    border: Border.all(width: 1, color: lightStrokeColor),
                   ),
                   child: ListView(
                     shrinkWrap: true,
