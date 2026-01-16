@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -15,24 +16,39 @@ class FcmService {
   Future<void> initFcm() async {
     RemoteMessage? remoteMessage = await fcm.getInitialMessage();
     if (remoteMessage != null) {
-      Future.delayed(const Duration(milliseconds: 500), () {
         handleNavigation(remoteMessage);
-      });
     }
     //
-    await Future.wait([
+    final permission = await fcm.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    if (permission.authorizationStatus == AuthorizationStatus.authorized) {
       //
-      fcm.requestPermission(alert: true, badge: true, sound: true),
+      bool canSubscribe = false;
       //
-      fcm.subscribeToTopic("matches"),
-      //
-      fcm.setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true,
-      ),
-      //
-    ]);
+      if (Platform.isIOS) {
+        String? apnsToken = await fcm.getAPNSToken();
+        if (apnsToken == null) {
+          await Future.delayed(const Duration(seconds: 3));
+          apnsToken = await fcm.getAPNSToken();
+        }
+        if (apnsToken == null) {
+          canSubscribe = false;
+          log("⚠️ APNS Token toujours nul après attente. Abonnement annulé.");
+        }
+      }
+      if (canSubscribe) {
+        await fcm.subscribeToTopic("matches");
+      }
+    }
+    //
+    await fcm.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
     FirebaseMessaging.onMessage.listen((RemoteMessage msg) {
       if (msg.notification != null) {

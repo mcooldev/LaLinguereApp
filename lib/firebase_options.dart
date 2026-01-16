@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,18 +49,9 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCYTyytf3hPuhi6mQCCOb6KzLz3NHMazt8',
-    appId: '1:1051920178350:web:19301c3d03e75645bfe13f',
-    messagingSenderId: '1051920178350',
-    projectId: 'la-linguere',
-    authDomain: 'la-linguere.firebaseapp.com',
-    storageBucket: 'la-linguere.firebasestorage.app',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDTeLXrF9GpRSxDi_7e1qhOg34kfXk63oA',
-    appId: '1:1051920178350:android:8a19b64cd179fefabfe13f',
+    appId: '1:1051920178350:android:43ef802e95557164bfe13f',
     messagingSenderId: '1051920178350',
     projectId: 'la-linguere',
     storageBucket: 'la-linguere.firebasestorage.app',
@@ -65,10 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyC1Nx5DVhlkLB19Dp9ryvASt3f77c1obvk',
-    appId: '1:1051920178350:ios:2a13997a3c27072cbfe13f',
+    appId: '1:1051920178350:ios:acd101292b336defbfe13f',
     messagingSenderId: '1051920178350',
     projectId: 'la-linguere',
     storageBucket: 'la-linguere.firebasestorage.app',
-    iosBundleId: 'com.example.laLinguere',
+    androidClientId: '1051920178350-8rvgbr1dtorarrd923beapov0g1t7iu2.apps.googleusercontent.com',
+    iosClientId: '1051920178350-ach4o6tkg85hhgull4lgaejet9p47aqc.apps.googleusercontent.com',
+    iosBundleId: 'com.diotali.lalinguere',
   );
 }

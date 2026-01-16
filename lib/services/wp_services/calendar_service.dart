@@ -18,7 +18,7 @@ class CalendarService {
       ),
     );
     _dio.interceptors.add(
-      LogInterceptor(requestBody: true, responseBody: false),
+      LogInterceptor(request: true, requestBody: true, responseBody: false),
     );
   }
 

@@ -41,7 +41,7 @@ class _MembershipPageState extends State<MembershipPage> {
       builder: (_, prov, _) {
         ///
         final theme = Theme.of(context);
-        final isActive = prov.user != null && !prov.user!.hasExpired;
+        final isActive = prov.user != null && prov.user!.isMember && !prov.user!.hasExpired;
 
         ///
         return Scaffold(

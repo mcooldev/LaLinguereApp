@@ -1,4 +1,4 @@
-package com.example.la_linguere
+package com.diotali.lalinguere
 
 import io.flutter.embedding.android.FlutterActivity
 

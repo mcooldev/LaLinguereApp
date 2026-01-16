@@ -31,7 +31,7 @@ class TeamNextMatchWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(90),
               color: Colors.transparent,
             ),
-            child: teamLogo == null
+            child: (teamLogo == null || teamLogo!.isEmpty)
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(90),
                     child: Image.asset(

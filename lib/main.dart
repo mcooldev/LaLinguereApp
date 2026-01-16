@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,8 @@ import 'package:la_linguere/services/firebase_services/fcm_service.dart';
 import 'package:la_linguere/services/wp_services/config.dart';
 import 'package:la_linguere/utils/theme/theme_data.dart';
 import 'package:provider/provider.dart';
+import 'package:recaptcha_enterprise_flutter/recaptcha.dart';
+import 'package:recaptcha_enterprise_flutter/recaptcha_client.dart';
 
 import 'firebase_options.dart';
 
@@ -58,18 +61,29 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //
+  await FirebaseAppCheck.instance.activate(
+    providerApple: const AppleDebugProvider(),
+    providerAndroid: const AndroidDebugProvider(),
+  );
+  //
   FirebaseMessaging.onBackgroundMessage(fcmMessageHandler);
   //
-  await fcm.initFcm();
   await fcm.initNotification();
   //
-  runApp(const MyApp());
+  final client = await Recaptcha.fetchClient(config.recaptchaSiteKey);
+  //
+  runApp(MyApp(client: client));
+  //
+  Future.delayed(const Duration(milliseconds: 500), () {
+    fcm.initFcm();
+  });
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.client});
 
-  // This widget is the root of your application.
+  final RecaptchaClient client;
+
   @override
   Widget build(BuildContext context) {
     ///

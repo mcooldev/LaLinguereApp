@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1051920178350:android:8a19b64cd179fefabfe13f",
+        "mobilesdk_app_id": "1:1051920178350:android:43ef802e95557164bfe13f",
         "android_client_info": {
-          "package_name": "com.example.la_linguere"
+          "package_name": "com.diotali.lalinguere"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1051920178350-mej50jcd4kujl20ggohtscnpkupe0h28.apps.googleusercontent.com",
+          "client_id": "1051920178350-o3gg9feq6i5slssgtm5mom011jl6qad4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.la_linguere",
+            "package_name": "com.diotali.lalinguere",
             "certificate_hash": "363b62c480e508951825fa8422b0e4c85bfe460f"
           }
         },
@@ -39,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1051920178350-73hmjgfppko7a6aeqi7o1kvrhdfh8sp9.apps.googleusercontent.com",
+              "client_id": "1051920178350-ach4o6tkg85hhgull4lgaejet9p47aqc.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.laLinguere"
+                "bundle_id": "com.diotali.lalinguere"
               }
             }
           ]

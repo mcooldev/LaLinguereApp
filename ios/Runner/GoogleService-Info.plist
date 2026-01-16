@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1051920178350-73hmjgfppko7a6aeqi7o1kvrhdfh8sp9.apps.googleusercontent.com</string>
+	<string>1051920178350-ach4o6tkg85hhgull4lgaejet9p47aqc.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1051920178350-73hmjgfppko7a6aeqi7o1kvrhdfh8sp9</string>
+	<string>com.googleusercontent.apps.1051920178350-ach4o6tkg85hhgull4lgaejet9p47aqc</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>1051920178350-mej50jcd4kujl20ggohtscnpkupe0h28.apps.googleusercontent.com</string>
+	<string>1051920178350-o3gg9feq6i5slssgtm5mom011jl6qad4.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyC1Nx5DVhlkLB19Dp9ryvASt3f77c1obvk</string>
 	<key>GCM_SENDER_ID</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.laLinguere</string>
+	<string>com.diotali.lalinguere</string>
 	<key>PROJECT_ID</key>
 	<string>la-linguere</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1051920178350:ios:2a13997a3c27072cbfe13f</string>
+	<string>1:1051920178350:ios:acd101292b336defbfe13f</string>
 </dict>
 </plist>

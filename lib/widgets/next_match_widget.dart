@@ -52,7 +52,7 @@ class NextMatchWidget extends StatelessWidget {
                   color: Colors.white24,
                   borderRadius: BorderRadius.circular(90),
                 ),
-                child: nextMatch == null
+                child: (nextMatch == null || nextMatch!.competitionLogo.isEmpty)
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(90),
                         child: Image.asset(

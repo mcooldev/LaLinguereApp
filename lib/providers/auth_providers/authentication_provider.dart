@@ -176,8 +176,9 @@ abstract class AuthenticationProvider with ChangeNotifier {
                     onPressed: () async {
                       navKey.currentState?.pop();
                       await AuthService.instance.signOut();
-                      setSignedAsGuest(true);
                       otpController.clear();
+                      setSignedAsGuest(true);
+                      navKey.currentState?.pushNamed("/authGate");
                     },
                     color: Colors.transparent,
                     height: 48,
@@ -346,21 +347,25 @@ abstract class AuthenticationProvider with ChangeNotifier {
           if (e.code == 'invalid-phone-number') {
             log("Le numéro fourni n'est pas valide.");
           }
+          log("❌ Erreur Firebase: ${e.code} - ${e.message}");
         },
         codeSent: (String verificationId, int? resendToken) {
+          log("✅ Code envoyé avec succès !");
           _userVerificationId = verificationId;
           _isLoading = false;
           notifyListeners();
           //
-          navKey.currentState?.pushNamed(
-            "/otpScreen",
-            arguments: {
-              "verificationId": verificationId,
-              "phoneNumber": userPhoneNumber,
-              "fullName": otpAccessType == "register" ? userFullName : "",
-              "otpAccessType": otpAccessType,
-            },
-          );
+          Future.delayed(const Duration(milliseconds: 300), (){
+            navKey.currentState?.pushNamed(
+              "/otpScreen",
+              arguments: {
+                "verificationId": verificationId,
+                "phoneNumber": userPhoneNumber,
+                "fullName": otpAccessType == "register" ? userFullName : "",
+                "otpAccessType": otpAccessType,
+              },
+            );
+          });
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           _userVerificationId = verificationId;
@@ -368,8 +373,10 @@ abstract class AuthenticationProvider with ChangeNotifier {
           notifyListeners();
         },
       );
-    } catch (e) {
+    } catch (e,s) {
       _isLoading = false;
+      debugPrint("Erreur lors de l'envoi du code OTP : $e");
+      debugPrint("Erreur Stack lors de l'envoi du code OTP : $s");
       notifyListeners();
     }
   }
@@ -553,6 +560,7 @@ class RegisterProvider extends AuthenticationProvider {
       //
     }
   }
+
 
   ///
   @override

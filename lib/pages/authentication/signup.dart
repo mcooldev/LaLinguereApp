@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -43,7 +45,9 @@ class _SignupState extends State<Signup> {
                 // body text
                 Text(
                   'Veuillez renseigner vos informations.',
-                  style: theme.textTheme.bodyMedium!.copyWith(color: bodyText),
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    color: bodyText,
+                  ),
                 ),
                 const SizedBox(height: 32),
 
@@ -67,6 +71,7 @@ class _SignupState extends State<Signup> {
                           return null;
                         },
                         //
+                        textCapitalization: TextCapitalization.words,
                         style: theme.textTheme.bodyMedium!.copyWith(
                           color: bodyText,
                         ),
@@ -104,60 +109,69 @@ class _SignupState extends State<Signup> {
 
                       /// phone number text field
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(90),
-                          border: Border.all(width: 1, color: strokeColor),
-                        ),
-                        child: InternationalPhoneNumberInput(
-                          textFieldController:
-                              prov.registerPhoneNumberController,
-                          onInputChanged: (PhoneNumber number) {
-                            prov.updateRegisterPhoneNumber(number);
-                          },
-                          onInputValidated: (value) {},
-                          keyboardType: const TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: false,
-                          ),
-                          selectorConfig: const SelectorConfig(
-                            selectorType: PhoneInputSelectorType.DIALOG,
-                            setSelectorButtonAsPrefixIcon: false,
-                            leadingPadding: 10,
-                            trailingSpace: false,
-                          ),
-                          initialValue: number,
-                          textStyle: theme.textTheme.bodyMedium,
-                          selectorTextStyle: theme.textTheme.bodyMedium!
-                              .copyWith(color: bodyText),
-                          spaceBetweenSelectorAndTextField: 8,
-                          inputDecoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(0),
-                            border: const OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                            hintText: '77 123 45 67',
-                            hintStyle: theme.textTheme.bodyMedium!.copyWith(
-                              color: bodyText.withValues(alpha: 0.4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(90),
+                            border: Border.all(
+                              width: 1,
+                              color: strokeColor,
                             ),
                           ),
+                          child: InternationalPhoneNumberInput(
+                            textFieldController:
+                                prov.registerPhoneNumberController,
+                            onInputChanged: (PhoneNumber number) {
+                              prov.updateRegisterPhoneNumber(number);
+                            },
+                            onInputValidated: (value) {},
+                            keyboardType:
+                                const TextInputType.numberWithOptions(
+                                  signed: false,
+                                  decimal: false,
+                                ),
+                            selectorConfig: const SelectorConfig(
+                              selectorType: PhoneInputSelectorType.DIALOG,
+                              setSelectorButtonAsPrefixIcon: false,
+                              leadingPadding: 10,
+                              trailingSpace: false,
+                            ),
+                            initialValue: number,
+                            textStyle: theme.textTheme.bodyMedium,
+                            selectorTextStyle: theme.textTheme.bodyMedium!
+                                .copyWith(color: bodyText),
+                            spaceBetweenSelectorAndTextField: 8,
+                            inputDecoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(0),
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: '77 123 45 67',
+                              hintStyle: theme.textTheme.bodyMedium!.copyWith(
+                                color: bodyText.withValues(alpha: 0.4),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 12),
 
                       /// verification otp btn
                       MaterialButton(
-                        onPressed: () async {
+                        onPressed: prov.isLoading ? null : () async {
                           final phoneToSend =
                               prov.registerPhoneNumber?.phoneNumber ?? "";
                           //
                           if (phoneToSend.isNotEmpty) {
-                            await prov.sendOtp(
-                              userPhoneNumber: phoneToSend,
-                              formKey: prov.registerFormKey,
-                              otpAccessType: "register",
-                              userFullName: prov.fullNameController.text,
-                            );
+                            try {
+                              //
+                              await prov.sendOtp(
+                                userPhoneNumber: phoneToSend,
+                                formKey: prov.registerFormKey,
+                                otpAccessType: "register",
+                                userFullName: prov.fullNameController.text,
+                              );
+                            } catch (e) {
+                              log("Error while sending otp: $e");
+                            }
                           }
                         },
                         color: blueLinguere,
@@ -219,12 +233,16 @@ class _SignupState extends State<Signup> {
                 /// or
                 Row(
                   children: [
-                    Expanded(child: Divider(thickness: 1, color: strokeColor)),
+                    Expanded(
+                      child: Divider(thickness: 1, color: strokeColor),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text('Ou', style: TextStyle(color: bodyText)),
                     ),
-                    Expanded(child: Divider(thickness: 1, color: strokeColor)),
+                    Expanded(
+                      child: Divider(thickness: 1, color: strokeColor),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 32),

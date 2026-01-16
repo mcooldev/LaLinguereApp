@@ -386,15 +386,13 @@ class _HomeState extends State<Home> {
                           //
                           return NewsWidget(
                             onTapNews: () {
-                              // todo: go to news detail page
-
                               final newsToDetails = NewsModel(
                                 imageActu: news.imageActu,
                                 titleActu: news.titleActu,
                                 bodyActu: news.bodyActu,
                                 dateActu: news.dateActu,
                               );
-
+                              //
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
