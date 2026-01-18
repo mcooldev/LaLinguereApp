@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:la_linguere/pages/authentication/auth_gate.dart';
@@ -62,8 +63,12 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //
   await FirebaseAppCheck.instance.activate(
-    providerApple: const AppleDebugProvider(),
-    providerAndroid: const AndroidDebugProvider(),
+    providerAndroid: kDebugMode
+        ? const AndroidDebugProvider()
+        : const AndroidPlayIntegrityProvider(),
+    providerApple: kDebugMode
+        ? const AppleDebugProvider()
+        : const AppleDeviceCheckProvider(),
   );
   //
   FirebaseMessaging.onBackgroundMessage(fcmMessageHandler);

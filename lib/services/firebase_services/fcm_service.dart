@@ -26,7 +26,7 @@ class FcmService {
     );
     if (permission.authorizationStatus == AuthorizationStatus.authorized) {
       //
-      bool canSubscribe = false;
+      bool canSubscribe = true;
       //
       if (Platform.isIOS) {
         String? apnsToken = await fcm.getAPNSToken();
@@ -34,11 +34,17 @@ class FcmService {
           await Future.delayed(const Duration(seconds: 3));
           apnsToken = await fcm.getAPNSToken();
         }
-        if (apnsToken == null) {
+        if (apnsToken != null) {
+          log("✅ APNS reçu : $apnsToken");
+          canSubscribe = true;
+        } else {
+          log("❌ APNS toujours null - Abonnement impossible");
           canSubscribe = false;
-          log("⚠️ APNS Token toujours nul après attente. Abonnement annulé.");
         }
+      } else {
+        log('🤖 Android détecté');
       }
+      //
       if (canSubscribe) {
         await fcm.subscribeToTopic("matches");
       }
