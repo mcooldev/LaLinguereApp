@@ -8,6 +8,7 @@ import 'package:la_linguere/providers/foundation_provider.dart';
 import 'package:la_linguere/providers/navigation_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/next_match_provider.dart';
 import '../../utils/constants/app_colors.dart';
 import '../../widgets/navigation_widget.dart';
 
@@ -26,13 +27,18 @@ class _FoundationState extends State<Foundation>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<FoundationProvider>().initTab(this);
       //
       if (!mounted) return;
       context.read<NavigationProvider>().currentIndex = 3;
       //
       foundation = context.read<FoundationProvider>();
+      //
+      await Future.wait([
+        context.read<NextMatchProvider>().fetchNextMatchU15(),
+        context.read<NextMatchProvider>().fetchNextMatchWoman(),
+      ]);
     });
   }
 

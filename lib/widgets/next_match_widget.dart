@@ -46,10 +46,10 @@ class NextMatchWidget extends StatelessWidget {
               Container(
                 width: 50,
                 height: 50,
-                padding: const EdgeInsets.all(6),
+                padding: const EdgeInsets.all(8),
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(90),
                 ),
                 child: (nextMatch == null || nextMatch!.competitionLogo.isEmpty)
@@ -134,7 +134,9 @@ class NextMatchWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(90),
                       ),
                       child: Text(
-                        nextMatch?.matchTime ?? '-N/C-',
+                        isLoading
+                            ? "00:00"
+                            : nextMatch?.matchTime ?? '-N/C-',
                         style: theme.textTheme.labelSmall!.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -162,7 +164,7 @@ class NextMatchWidget extends StatelessWidget {
 
           /// live watch btn & see other match btn
           MaterialButton(
-            onPressed: onTapLiveWatch,
+            onPressed: isLoading ? null : onTapLiveWatch,
             color: redLaLinguere,
             height: 48,
             minWidth: double.infinity,
@@ -174,7 +176,7 @@ class NextMatchWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Suivre le match',
+                  isLoading ? 'Chargement...' : 'Suivre le match',
                   style: theme.textTheme.labelLarge!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -188,7 +190,7 @@ class NextMatchWidget extends StatelessWidget {
           const SizedBox(height: 8),
           // See other match btn
           MaterialButton(
-            onPressed: onTapSeeOtherMatch,
+            onPressed: isLoading ? null : onTapSeeOtherMatch,
             color: Colors.transparent,
             height: 48,
             elevation: 0,
@@ -200,7 +202,7 @@ class NextMatchWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Voir les autres matchs',
+                  isLoading ? 'Chargement...' : 'Voir les autres matchs',
                   style: theme.textTheme.labelLarge!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,

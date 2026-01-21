@@ -107,18 +107,23 @@ class ComingMatchWidget extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CircleAvatar(
-                        radius: 24,
-                        child: isLoading
-                            ? Image.asset("assets/placeholder_image.png")
-                            : CachedNetworkImage(
-                                imageUrl: calendar.opposingTeamLogo,
-                                placeholder: (context, url) =>
-                                    Image.asset("assets/placeholder_image.png"),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(CupertinoIcons.nosign),
-                                fit: BoxFit.cover,
-                              ),
+                      ClipRRect(
+                        clipBehavior: Clip.antiAlias,
+                        borderRadius: BorderRadius.circular(90),
+                        child: CircleAvatar(
+                          radius: 24,
+                          backgroundColor: isLoading ? lightBg : Colors.white,
+                          child: isLoading
+                              ? Image.asset("assets/placeholder_image.png")
+                              : CachedNetworkImage(
+                                  imageUrl: calendar.opposingTeamLogo,
+                                  placeholder: (context, url) =>
+                                      Image.asset("assets/placeholder_image.png"),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(CupertinoIcons.nosign),
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
                       ),
                       const SizedBox(width: 4),
                       Flexible(
@@ -158,17 +163,22 @@ class ComingMatchWidget extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      CircleAvatar(
-                        radius: 24,
-                        child: isLoading
-                            ? Image.asset("assets/placeholder_image.png")
-                            : CachedNetworkImage(
-                          imageUrl: calendar.opposingTeamLogo,
-                          placeholder: (context, url) =>
-                              Image.asset("assets/placeholder_image.png"),
-                          errorWidget: (context, url, error) =>
-                              const Icon(CupertinoIcons.nosign),
-                          fit: BoxFit.cover,
+                      ClipRRect(
+                        clipBehavior: Clip.antiAlias,
+                        borderRadius: BorderRadius.circular(90),
+                        child: CircleAvatar(
+                          radius: 24,
+                          backgroundColor: isLoading ? lightBg : Colors.white,
+                          child: isLoading
+                              ? Image.asset("assets/placeholder_image.png")
+                              : CachedNetworkImage(
+                            imageUrl: calendar.opposingTeamLogo,
+                            placeholder: (context, url) =>
+                                Image.asset("assets/placeholder_image.png"),
+                            errorWidget: (context, url, error) =>
+                                const Icon(CupertinoIcons.nosign),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ],

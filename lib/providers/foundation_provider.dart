@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:la_linguere/models/contact_model.dart';
-import 'package:la_linguere/models/next_match_model.dart';
-import 'package:la_linguere/models/ranking_model.dart';
 import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/history_view.dart';
 import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/team_u15_view.dart';
 import 'package:la_linguere/pages/otherPages/foundation_tabview_pages/team_views/team_woman_view.dart';
@@ -153,50 +151,9 @@ class FoundationProvider with ChangeNotifier {
     }
   }
 
-  /// Next match woman
-  final NextMatchWomanModel _nextMatchWoman = NextMatchWomanModel(
-    competitionLogo: "assets/placeholder_image.png",
-    competitionName: "Ligue 1",
-    day: "0",
-    matchTime: "00:00",
-    teamLogoHome: "",
-    teamNameHome: "Equipe dom.",
-    teamLogoAway: "",
-    teamNameAway: "Equipe ext.",
-  );
-
-  NextMatchWomanModel get nextMatchWoman => _nextMatchWoman;
-
-  final RankingModel rankingWoman = RankingModel(
-    place: 00,
-    points: 00,
-    playedMatch: 00,
-  );
-
-  /// Next match u15
-  final NextMatchU15Model _nextMatchU15 = NextMatchU15Model(
-    competitionLogo: "assets/placeholder_image.png",
-    competitionName: "Ligue 1",
-    day: "0",
-    matchTime: "00:00",
-    teamLogoHome: "",
-    teamNameHome: "Equipe dom.",
-    teamLogoAway: "",
-    teamNameAway: "Equipe ext.",
-  );
-
-  NextMatchU15Model get nextMatchU15 => _nextMatchU15;
-
-  final RankingModel rankingU15 = RankingModel(
-    place: 00,
-    points: 00,
-    playedMatch: 00,
-  );
-
   /// Disposer
   @override
   void dispose() {
-    // TODO: implement dispose
     scrollController.dispose();
     super.dispose();
   }

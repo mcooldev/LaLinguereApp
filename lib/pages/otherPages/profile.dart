@@ -11,6 +11,7 @@ import 'package:la_linguere/widgets/navigation_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_providers/authentication_provider.dart';
+import '../../providers/navigation_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -20,6 +21,17 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  ///
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      context.read<NavigationProvider>().currentIndex = 4;
+    });
+  }
+
+  ///
   @override
   Widget build(BuildContext context) {
     ///
@@ -189,8 +201,7 @@ class _ProfileState extends State<Profile> {
                       ),
 
                       //
-                      if (isActive ||
-                          loginProv.signedAsGuest)
+                      if (isActive || loginProv.signedAsGuest)
                         Column(
                           children: [
                             Divider(thickness: 1, color: lightStrokeColor),

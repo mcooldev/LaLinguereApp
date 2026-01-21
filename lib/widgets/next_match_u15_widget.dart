@@ -31,13 +31,7 @@ class NextMatchU15Widget extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: isLoading
-          ? const Center(
-              child: CircularProgressIndicator.adaptive(
-                backgroundColor: Colors.white,
-              ),
-            )
-          : Column(
+      child: Column(
               children: [
                 /// competition name and day
                 Row(
@@ -46,13 +40,13 @@ class NextMatchU15Widget extends StatelessWidget {
                     Container(
                       width: 50,
                       height: 50,
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white24,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(90),
                       ),
                       child:
-                          nextMatchU15 == null
+                          (nextMatchU15 == null || isLoading)
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(90),
                               child: Image.asset(
@@ -74,7 +68,7 @@ class NextMatchU15Widget extends StatelessWidget {
 
                     /// competition name
                     Text(
-                      nextMatchU15?.competitionName ?? 'Aucune Compet.',
+                      isLoading ? 'Ligue...' : nextMatchU15?.competitionName ?? 'Ligue...',
                       style: theme.textTheme.titleSmall!.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -84,7 +78,7 @@ class NextMatchU15Widget extends StatelessWidget {
 
                     /// day
                     Text(
-                      '${nextMatchU15?.day ?? '0'}e Journée',
+                      isLoading ? '...e Journée' : '${nextMatchU15?.day ?? '0'}e Journée',
                       style: theme.textTheme.labelLarge!.copyWith(
                         color: yellowLinguere,
                       ),
@@ -131,7 +125,7 @@ class NextMatchU15Widget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(90),
                             ),
                             child: Text(
-                              nextMatchU15?.matchTime ?? '-N/C-',
+                              isLoading ? "00:00" : nextMatchU15?.matchTime ?? '-N/C-',
                               style: theme.textTheme.labelSmall!.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/navigation_provider.dart';
@@ -31,23 +30,6 @@ class _NextMatchState extends State<NextMatch> {
         final nextMatch = prov.nextMatch;
         final isLoading = prov.isLoading;
         //
-        if (isLoading) {
-          return Center(
-            child: Column(
-              children: [
-                const CircularProgressIndicator.adaptive(
-                  backgroundColor: Colors.white,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Chargement en cours...',
-                  style: GoogleFonts.manrope(color: Colors.white, fontSize: 16),
-                ),
-              ],
-            ),
-          );
-        }
-        //
         return Column(
           children: [
             /// competition name and day
@@ -57,12 +39,12 @@ class _NextMatchState extends State<NextMatch> {
                 Container(
                   width: 50,
                   height: 50,
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white24,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(90),
                   ),
-                  child: nextMatch?.competitionLogo == null
+                  child: (nextMatch?.competitionLogo == null || isLoading)
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(90),
                           child: Image.asset(
@@ -84,7 +66,7 @@ class _NextMatchState extends State<NextMatch> {
 
                 /// competition name
                 Text(
-                  nextMatch!.competitionName,
+                  isLoading ? 'Ligue...' : nextMatch!.competitionName,
                   style: theme.textTheme.titleSmall!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -94,7 +76,7 @@ class _NextMatchState extends State<NextMatch> {
 
                 /// day
                 Text(
-                  '${nextMatch.day}e Journée',
+                  isLoading ? '...e Journée' : '${nextMatch?.day}e Journée',
                   style: theme.textTheme.labelLarge!.copyWith(
                     color: yellowLinguere,
                   ),
@@ -112,8 +94,8 @@ class _NextMatchState extends State<NextMatch> {
                   flex: 2,
                   child: TeamNextMatchWidget(
                     theme: theme,
-                    teamLogo: nextMatch.teamLogoHome,
-                    teamName: nextMatch.teamNameHome,
+                    teamLogo: nextMatch?.teamLogoHome,
+                    teamName: nextMatch?.teamNameHome ?? "",
                     isHome: true,
                   ),
                 ),
@@ -141,7 +123,7 @@ class _NextMatchState extends State<NextMatch> {
                           borderRadius: BorderRadius.circular(90),
                         ),
                         child: Text(
-                          nextMatch.matchTime,
+                          nextMatch?.matchTime ?? "00:00",
                           style: theme.textTheme.labelSmall!.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -158,8 +140,8 @@ class _NextMatchState extends State<NextMatch> {
                   flex: 2,
                   child: TeamNextMatchWidget(
                     theme: theme,
-                    teamLogo: nextMatch.teamLogoAway,
-                    teamName: nextMatch.teamNameAway,
+                    teamLogo: nextMatch?.teamLogoAway,
+                    teamName: nextMatch?.teamNameAway ?? "",
                     isHome: false,
                   ),
                 ),
@@ -170,7 +152,6 @@ class _NextMatchState extends State<NextMatch> {
             /// live watch btn
             MaterialButton(
               onPressed: () {
-                // todo: go to Youtube channel for live watching
                 navProvider.showBottomSheet(
                   context: context,
                   onTapBtn: () {

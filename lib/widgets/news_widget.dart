@@ -52,18 +52,20 @@ class NewsWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                     color: Colors.white,
                   ),
-                  child: imageActu == null
-                      ? Image.asset('assets/placeholder_image.png', fit: BoxFit.cover,)
+                  child: (imageActu == null || prov.isLoading)
+                      ? Image.asset(
+                          'assets/placeholder_image.png',
+                          fit: BoxFit.cover,
+                        )
                       : CachedNetworkImage(
                           imageUrl: imageActu!,
                           fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              Image.asset('assets/placeholder_image.png', fit: BoxFit.cover,),
+                          placeholder: (context, url) => Image.asset(
+                            'assets/placeholder_image.png',
+                            fit: BoxFit.cover,
+                          ),
                           errorWidget: (context, url, error) =>
-                              Icon(
-                                CupertinoIcons.photo,
-                                color: strokeColor,
-                              ),
+                              Icon(CupertinoIcons.photo, color: strokeColor),
                         ),
                 ),
                 const SizedBox(width: 10),
@@ -79,7 +81,7 @@ class NewsWidget extends StatelessWidget {
                       children: [
                         // news date
                         Text(
-                          prov.dateFormat(dateActu),
+                          prov.isLoading ? "00/00/0000" : prov.dateFormat(dateActu),
                           style: theme.textTheme.labelMedium!.copyWith(
                             color: bodyText,
                           ),
@@ -87,7 +89,7 @@ class NewsWidget extends StatelessWidget {
 
                         // news title
                         Text(
-                          titleActu,
+                          prov.isLoading ? "Titre..." : titleActu,
                           style: theme.textTheme.bodyLarge!.copyWith(
                             height: 1.3,
                             fontWeight: FontWeight.w600,

@@ -20,22 +20,7 @@ class LastMatchPlayed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Center(
-            child: Column(
-              children: [
-                const CircularProgressIndicator.adaptive(
-                  backgroundColor: Colors.white,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Chargement en cours...',
-                  style: GoogleFonts.manrope(color: Colors.white, fontSize: 16),
-                ),
-              ],
-            ),
-          )
-        : Column(
+    return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               /// competition name and day
@@ -47,7 +32,7 @@ class LastMatchPlayed extends StatelessWidget {
                     height: 50,
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.white24,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(90),
                     ),
                     child: Image.asset(
