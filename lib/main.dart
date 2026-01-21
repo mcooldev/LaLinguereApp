@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:app_badge_plus/app_badge_plus.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,6 +13,8 @@ import 'package:la_linguere/pages/authentication/forget_password.dart';
 import 'package:la_linguere/pages/authentication/login.dart';
 import 'package:la_linguere/pages/authentication/otp_screen.dart';
 import 'package:la_linguere/pages/authentication/signup.dart';
+import 'package:la_linguere/pages/membership_payment_pages/error_payment.dart';
+import 'package:la_linguere/pages/membership_payment_pages/success_payment.dart';
 import 'package:la_linguere/pages/onBoarding/on_boarding_screen.dart';
 import 'package:la_linguere/pages/onBoarding/splash.dart';
 import 'package:la_linguere/pages/otherPages/foundation.dart';
@@ -35,6 +39,7 @@ import 'package:la_linguere/utils/theme/theme_data.dart';
 import 'package:provider/provider.dart';
 import 'package:recaptcha_enterprise_flutter/recaptcha.dart';
 import 'package:recaptcha_enterprise_flutter/recaptcha_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firebase_options.dart';
 
@@ -84,11 +89,44 @@ void main() async {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.client});
 
   final RecaptchaClient client;
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ///
+ bool? isDonation;
+  @override
+  void initState() {
+    super.initState();
+    _removeBadge();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final tokenPayment = prefs.getString("token_payment_donation");
+      final requestIdDonation = prefs.getString("request_id_donation");
+      if (tokenPayment != null && requestIdDonation != null) {
+        setState(() {
+          isDonation = true;
+        });
+      }
+    });
+  }
+
+  Future<void> _removeBadge() async {
+    final bool isSupported = await AppBadgePlus.isSupported();
+    if (Platform.isAndroid || Platform.isIOS) {
+      if (isSupported) {
+        AppBadgePlus.updateBadge(0);
+      }
+    }
+  }
+
+  ///
   @override
   Widget build(BuildContext context) {
     ///
@@ -140,6 +178,8 @@ class MyApp extends StatelessWidget {
           '/support': (_) => const Support(),
           '/foundation': (_) => const Foundation(),
           //
+          "/success": (_) =>  SuccessPayment(isDonation: isDonation ?? false),
+          "/error": (_) =>  ErrorPayment(isDonation: isDonation ?? false),
         },
       ),
     );

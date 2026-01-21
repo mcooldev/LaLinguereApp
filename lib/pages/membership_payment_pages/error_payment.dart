@@ -23,8 +23,10 @@ class _ErrorPaymentState extends State<ErrorPayment> {
 
     ///
     return Scaffold(
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // icon
@@ -43,9 +45,10 @@ class _ErrorPaymentState extends State<ErrorPayment> {
             ),
             const SizedBox(height: 6),
             // description
-            Text( widget.isDonation
-              ? "Votre don a échoué."
-              : "Votre souscription a échoué.",
+            Text(
+              widget.isDonation
+                  ? "Votre don a échoué."
+                  : "Votre souscription a échoué.",
               textAlign: TextAlign.center,
               style: Theme.of(
                 context,
@@ -83,47 +86,47 @@ class _ErrorPaymentState extends State<ErrorPayment> {
             ),
             const SizedBox(height: 12),
 
-            if(widget.isDonation)
-            // btn profile
-            MaterialButton(
-              onPressed: () {
-                navKey.currentState?.pushNamed("/profile");
-              },
-              color: blueLinguere,
-              height: 48,
-              elevation: 0,
-              minWidth: double.infinity,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(90),
-              ),
-              child: Text(
-                'Réessayer la souscription',
-                style: Theme.of(
-                  context,
-                ).textTheme.labelLarge!.copyWith(color: Colors.white),
-              ),
-            )
+            if (widget.isDonation)
+              // btn profile
+              MaterialButton(
+                onPressed: () {
+                  navKey.currentState?.pushNamed("/profile");
+                },
+                color: blueLinguere,
+                height: 48,
+                elevation: 0,
+                minWidth: double.infinity,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(90),
+                ),
+                child: Text(
+                  'Réessayer la souscription',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge!.copyWith(color: Colors.white),
+                ),
+              )
             else
-            // btn membership page
-            MaterialButton(
-              onPressed: () {
-                foundationProvider.setTabIndex(1);
-                navKey.currentState?.pushNamed("/foundation");
-              },
-              color: blueLinguere,
-              height: 48,
-              elevation: 0,
-              minWidth: double.infinity,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(90),
+              // btn membership page
+              MaterialButton(
+                onPressed: () {
+                  foundationProvider.setTabIndex(1);
+                  navKey.currentState?.pushNamed("/foundation");
+                },
+                color: blueLinguere,
+                height: 48,
+                elevation: 0,
+                minWidth: double.infinity,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(90),
+                ),
+                child: Text(
+                  'Réessayer la souscription',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge!.copyWith(color: Colors.white),
+                ),
               ),
-              child: Text(
-                'Réessayer la souscription',
-                style: Theme.of(
-                  context,
-                ).textTheme.labelLarge!.copyWith(color: Colors.white),
-              ),
-            ),
           ],
         ),
       ),

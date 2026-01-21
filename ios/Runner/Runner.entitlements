@@ -4,6 +4,10 @@
 <dict>
 	<key>aps-environment</key>
 	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:lalinguere.net</string>
+	</array>
 	<key>com.apple.developer.devicecheck.app-attest-opt-in</key>
 	<array>
 		<string>CDhash</string>

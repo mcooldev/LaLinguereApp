@@ -49,7 +49,6 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     matchesProvider.resetTabIndex();
     super.dispose();
   }

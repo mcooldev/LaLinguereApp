@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/models/calendar_model.dart';
 
@@ -9,12 +11,14 @@ class ComingMatchWidget extends StatelessWidget {
     required this.theme,
     required this.date,
     required this.calendar,
+    required this.isLoading,
   });
 
   final CalendarModel calendar;
 
   final ThemeData theme;
   final String date;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -105,10 +109,16 @@ class ComingMatchWidget extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 24,
-                        child: Image(
-                          image: NetworkImage(calendar.opposingTeamLogo),
-                          fit: BoxFit.cover,
-                        ),
+                        child: isLoading
+                            ? Image.asset("assets/placeholder_image.png")
+                            : CachedNetworkImage(
+                                imageUrl: calendar.opposingTeamLogo,
+                                placeholder: (context, url) =>
+                                    Image.asset("assets/placeholder_image.png"),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(CupertinoIcons.nosign),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                       const SizedBox(width: 4),
                       Flexible(
@@ -150,8 +160,14 @@ class ComingMatchWidget extends StatelessWidget {
                       const SizedBox(width: 4),
                       CircleAvatar(
                         radius: 24,
-                        child: Image(
-                          image: NetworkImage(calendar.opposingTeamLogo),
+                        child: isLoading
+                            ? Image.asset("assets/placeholder_image.png")
+                            : CachedNetworkImage(
+                          imageUrl: calendar.opposingTeamLogo,
+                          placeholder: (context, url) =>
+                              Image.asset("assets/placeholder_image.png"),
+                          errorWidget: (context, url, error) =>
+                              const Icon(CupertinoIcons.nosign),
                           fit: BoxFit.cover,
                         ),
                       ),

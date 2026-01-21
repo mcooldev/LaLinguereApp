@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:la_linguere/providers/next_match_provider.dart';
 import 'package:la_linguere/services/other_service/results_service.dart';
 
 import '../models/calendar_model.dart';
@@ -11,6 +12,8 @@ class MatchesProvider with ChangeNotifier {
   TabController? _tabController;
 
   TabController? get tabController => _tabController;
+
+  NextMatchProvider nextMatchProvider = NextMatchProvider();
 
   set tabController(TabController? tabController) {
     _tabController = tabController;
@@ -49,11 +52,23 @@ class MatchesProvider with ChangeNotifier {
     }
   }
 
+  bool _isMatchToday() {
+    if (nextMatchProvider.nextMatch == null) return false;
+    //
+    final today = DateTime.now();
+    final matchDate = DateTime.parse(nextMatchProvider.nextMatch!.matchTime);
+    final isSameDay =
+        today.year == matchDate.year &&
+        today.month == matchDate.month &&
+        today.day == matchDate.day;
+    return isSameDay;
+  }
+
   String get appBarTitle {
     if (_tabController == null) return "Prochain match";
     switch (_tabController!.index) {
       case 0:
-        return "Prochain match";
+        return _isMatchToday() ? "Match du jour" : "Prochain match";
       case 1:
         return "Dernier match joué";
       case 2:

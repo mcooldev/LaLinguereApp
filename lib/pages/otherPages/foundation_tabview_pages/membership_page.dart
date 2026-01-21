@@ -98,7 +98,7 @@ class _MembershipPageState extends State<MembershipPage> {
                   imageMembership: 'assets/member_image.png',
                   titleMembership:
                       membershipTypeName[MembershipType.member.index],
-                  priceMembership: '24000',
+                  priceMembership: '3',
                   advantagesMembership: [
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
                     'Lorem ipsum dolor sit amet consectetur. Quam.',
@@ -110,7 +110,7 @@ class _MembershipPageState extends State<MembershipPage> {
                           context,
                           subsName:
                               membershipTypeName[MembershipType.member.index],
-                          subsAmount: '24000',
+                          subsAmount: '3',
                         ),
                 ),
                 const SizedBox(height: 16),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:la_linguere/models/user_model.dart';
 import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 
 import '../services/membership_payment_service/membership_payment_service.dart';
@@ -53,6 +54,7 @@ class MembershipProvider with ChangeNotifier {
     required String? phoneNumber,
     required String amount,
     required bool isDonation,
+    required MembershipType? newMembershipType,
   }) async {
     if (isLoading) return;
     //
@@ -63,7 +65,7 @@ class MembershipProvider with ChangeNotifier {
           behavior: SnackBarBehavior.floating,
           shape: const StadiumBorder(),
           content: Text(
-            "⚠️ • veuillez choisir une méthode de paiement",
+            "🤑 • choisissez un moyen de paiement",
             textAlign: TextAlign.center,
             style: Theme.of(
               context,
@@ -104,7 +106,14 @@ class MembershipProvider with ChangeNotifier {
         paymentMethod: _partnerCodes[_paymentIndex],
         index: _paymentIndex,
         isDonation: isDonation,
+        newMembershipType: newMembershipType,
       );
+      //
+      if (isDonation) {
+        amountController.clear();
+        _paymentIndex == -1;
+        notifyListeners();
+      }
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

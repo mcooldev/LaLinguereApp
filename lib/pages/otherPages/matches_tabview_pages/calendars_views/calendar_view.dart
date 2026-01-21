@@ -41,73 +41,80 @@ class _CalendarViewState extends State<CalendarView> {
                 Text('Matchs à venir', style: theme.textTheme.titleLarge),
                 const SizedBox(height: 16),
                 // Grouped list here
-                if (prov.isLoading)
-                  const Center(
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator.adaptive(),
-                        SizedBox(height: 12),
-                        Text('Chargement des matchs en cours...'),
-                      ],
-                    ),
-                  )
-                else if (prov.matchesViewIndex == 0)
-                  GroupedListView(
-                    key: UniqueKey(),
-                    padding: const EdgeInsets.all(0),
-                    useStickyGroupSeparators: false,
-                    elements: prov.calendarList,
-                    //
-                    groupBy: (calendar) => calendar.day.startsWith('J')
-                        ? calendar.day.substring(1)
-                        : calendar.day,
-                    //
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    //
-                    groupSeparatorBuilder: (String val) {
-                      //
-                      String suffixDay = (val == "1") ? "ère" : "e";
-
-                      //
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                if (prov.matchesViewIndex == 0)
+                  if (prov.isLoading)
+                    Center(
+                      child: Column(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 8),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: yellowLinguere,
-                              borderRadius: BorderRadius.circular(60),
-                            ),
-                            child: Text(
-                              "$val$suffixDay Journée",
-                              style: theme.textTheme.labelSmall!.copyWith(
-                                color: darkBlue,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                          const CircularProgressIndicator.adaptive(),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Chargement des données...',
+                            style: theme.textTheme.bodyMedium,
                           ),
                         ],
-                      );
-                    },
-                    //
-                    floatingHeader: false,
-                    itemBuilder: (context, calendar) {
+                      ),
+                    )
+                  else
+                    GroupedListView(
+                      key: UniqueKey(),
+                      padding: const EdgeInsets.all(0),
+                      useStickyGroupSeparators: false,
+                      elements: prov.calendarList,
                       //
-                      final date =
-                          "${prov.dateFormat(calendar.dateMatch).split(" ")[0]} ${prov.dateFormat(calendar.dateMatch).split(" ")[1]}";
+                      groupBy: (calendar) => calendar.day.startsWith('J')
+                          ? calendar.day.substring(1)
+                          : calendar.day,
                       //
-                      return ComingMatchWidget(
-                        theme: theme,
-                        date: date,
-                        calendar: calendar,
-                      );
-                    },
-                  )
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      //
+                      groupSeparatorBuilder: (String val) {
+                        //
+                        String suffixDay = (val == "1") ? "ère" : "e";
+
+                        //
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: yellowLinguere,
+                                borderRadius: BorderRadius.circular(60),
+                              ),
+                              child: Text(
+                                prov.isLoading
+                                    ? "...e Journée"
+                                    : "$val$suffixDay Journée",
+                                style: theme.textTheme.labelSmall!.copyWith(
+                                  color: darkBlue,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      //
+                      floatingHeader: false,
+                      itemBuilder: (context, calendar) {
+                        //
+                        final date =
+                            "${prov.dateFormat(calendar.dateMatch).split(" ")[0]} ${prov.dateFormat(calendar.dateMatch).split(" ")[1]}";
+                        //
+                        return ComingMatchWidget(
+                          theme: theme,
+                          date: date,
+                          calendar: calendar,
+                          isLoading: prov.isLoading,
+                        );
+                      },
+                    )
                 else if (prov.matchesViewIndex == 1)
                   const Center(
                     child: Column(

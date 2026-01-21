@@ -6,6 +6,17 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
+    <!-- Samsung -->
+    <uses-permission android:name="com.sec.android.provider.badge.permission.READ" />
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" />
+    <!-- Huawei -->
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
+    <uses-permission android:name="com.huawei.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.huawei.android.launcher.permission.WRITE_SETTINGS" />
+    <!-- Sony -->
+    <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" />
+    <uses-permission android:name="com.sonymobile.home.permission.PROVIDER_INSERT_BADGE" />
+
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
@@ -42,18 +53,13 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="error"
-                    android:scheme="lalinguere" />
-                <data
-                    android:host="success"
-                    android:scheme="lalinguere" />
-
-                <data
                     android:host="lalinguere.net"
+                    android:path="/success"
                     android:scheme="https" />
                 <data
                     android:host="lalinguere.net"
-                    android:scheme="http" />
+                    android:path="/error"
+                    android:scheme="https" />
             </intent-filter>
 
         </activity>

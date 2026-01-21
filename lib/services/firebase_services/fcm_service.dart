@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:app_badge_plus/app_badge_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:la_linguere/main.dart';
@@ -16,7 +17,7 @@ class FcmService {
   Future<void> initFcm() async {
     RemoteMessage? remoteMessage = await fcm.getInitialMessage();
     if (remoteMessage != null) {
-        handleNavigation(remoteMessage);
+      handleNavigation(remoteMessage);
     }
     //
     final permission = await fcm.requestPermission(
@@ -67,6 +68,8 @@ class FcmService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage msg) {
       if (msg.notification != null) {
         handleNavigation(msg);
+        //
+        AppBadgePlus.updateBadge(0);
       }
     });
   }
@@ -77,6 +80,8 @@ class FcmService {
         "/matches",
         (route) => false,
       );
+      //
+      AppBadgePlus.updateBadge(0);
     }
   }
 

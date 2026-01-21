@@ -228,7 +228,7 @@ abstract class AuthenticationProvider with ChangeNotifier {
           //
           navKey.currentState?.pushNamedAndRemoveUntil(
             "/authGate",
-                (route) => false,
+            (route) => false,
           );
         }
 
@@ -355,7 +355,7 @@ abstract class AuthenticationProvider with ChangeNotifier {
           _isLoading = false;
           notifyListeners();
           //
-          Future.delayed(const Duration(milliseconds: 300), (){
+          Future.delayed(const Duration(milliseconds: 300), () {
             navKey.currentState?.pushNamed(
               "/otpScreen",
               arguments: {
@@ -373,7 +373,7 @@ abstract class AuthenticationProvider with ChangeNotifier {
           notifyListeners();
         },
       );
-    } catch (e,s) {
+    } catch (e, s) {
       _isLoading = false;
       debugPrint("Erreur lors de l'envoi du code OTP : $e");
       debugPrint("Erreur Stack lors de l'envoi du code OTP : $s");
@@ -476,7 +476,7 @@ class LoginProvider extends AuthenticationProvider {
     }
   }
 
-  Future<void> updateUserDataMembership(MembershipType newMembership) async {
+  Future<void> updateUserDataMembership(MembershipType? newMembership) async {
     try {
       final now = DateTime.now();
       final oneYearLater = now.add(const Duration(days: 365));
@@ -486,7 +486,8 @@ class LoginProvider extends AuthenticationProvider {
           .doc(auth.currentUser?.uid);
 
       await userCollections.update({
-        'membershipType': newMembership.name,
+        'membershipType':
+            newMembership?.name ?? MembershipType.notSubscribed.name,
         'isMember': true,
         'membershipUpdatedAt': FieldValue.serverTimestamp(),
         'expiryDate': Timestamp.fromDate(oneYearLater),
@@ -560,7 +561,6 @@ class RegisterProvider extends AuthenticationProvider {
       //
     }
   }
-
 
   ///
   @override

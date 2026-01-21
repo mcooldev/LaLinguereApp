@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:la_linguere/main.dart';
+import 'package:la_linguere/models/user_model.dart';
 import 'package:la_linguere/pages/membership_payment_pages/card_payment_view.dart';
 import 'package:la_linguere/pages/membership_payment_pages/check_payment_page.dart';
 import 'package:la_linguere/pages/membership_payment_pages/error_payment.dart';
 import 'package:la_linguere/pages/membership_payment_pages/success_payment.dart';
+import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -81,6 +83,7 @@ class MembershipPaymentService {
     required String paymentMethod,
     required int index,
     required bool isDonation,
+    required MembershipType? newMembershipType
   }) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -129,8 +132,10 @@ class MembershipPaymentService {
               navKey.currentState?.pop();
               navKey.currentState?.pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) =>
-                      CheckPaymentPage(isDonation: isDonation),
+                  builder: (context) => CheckPaymentPage(
+                    isDonation: isDonation,
+                    membershipType: newMembershipType,
+                  ),
                 ),
                 (route) => false,
               );
@@ -188,11 +193,15 @@ class MembershipPaymentService {
   Future<void> checkPayment({
     required BuildContext context,
     required bool isDonation,
+    required MembershipType? newMembershipType,
+    required LoginProvider loginProvider
   }) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       //
-      final token = prefs.getString(isDonation ? "token_payment_donation" : "token_payment");
+      final token = prefs.getString(
+        isDonation ? "token_payment_donation" : "token_payment",
+      );
       final requestId = prefs.getString(
         isDonation ? "request_id_donation" : "request_id",
       );
@@ -200,16 +209,12 @@ class MembershipPaymentService {
       if (token == null || requestId == null) {
         log("Erreur: Identifiants de transaction introuvables.");
         return;
-      }  
+      }
       //
       final response = await _dio.get(
         sessionUrlPath,
         queryParameters: {"remoteTrxId": requestId},
-        options: Options(
-          headers: {
-            "Authorization": "Bearer $token",
-          },
-        ),
+        options: Options(headers: {"Authorization": "Bearer $token"}),
       );
       if (response.statusCode == 200 && response.data["status"] == "SUCCESS") {
         //
@@ -240,11 +245,15 @@ class MembershipPaymentService {
             isDonation ? "token_payment_donation" : "token_payment",
           );
           //
-          navKey.currentState?.pushAndRemoveUntil(
+          if (!isDonation) {
+            loginProvider.updateUserDataMembership(newMembershipType);
+          }
+          //
+          if(!context.mounted) return;
+          Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => SuccessPayment(isDonation: isDonation),
             ),
-            (route) => false,
           );
         } else {
           await prefs.remove(isDonation ? "request_id_donation" : "request_id");
@@ -252,11 +261,11 @@ class MembershipPaymentService {
             isDonation ? "token_payment_donation" : "token_payment",
           );
           //
-          navKey.currentState?.pushAndRemoveUntil(
+          if(!context.mounted) return;
+          Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => ErrorPayment(isDonation: isDonation),
             ),
-            (route) => false,
           );
         }
       } else {
