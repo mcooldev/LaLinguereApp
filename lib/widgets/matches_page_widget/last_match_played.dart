@@ -54,7 +54,7 @@ class LastMatchPlayed extends StatelessWidget {
 
                   /// day
                   Text(
-                    'Journée -N/C-',
+                    '#e Journée',
                     style: theme.textTheme.labelLarge!.copyWith(
                       color: yellowLinguere,
                     ),
