@@ -263,6 +263,8 @@ class _ProfileState extends State<Profile> {
                           } else if (loginProv.user != null) {
                             //
                             await authService.signOut();
+                            loginProv.user = null;
+                            //
                             navKey.currentState?.pushNamedAndRemoveUntil(
                               "/authGate",
                               (route) => false,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
 import '../../providers/foundation_provider.dart';
@@ -16,6 +17,22 @@ class ErrorPayment extends StatefulWidget {
 }
 
 class _ErrorPaymentState extends State<ErrorPayment> {
+  ///
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString(widget.isDonation ? "token_payment_donation" : "token_payment");
+      final requestId = prefs.getString(widget.isDonation ? "request_id_donation" : "request_id");
+      if (token != null && requestId != null) {
+        prefs.remove(widget.isDonation ? "token_payment_donation" : "token_payment");
+        prefs.remove(widget.isDonation ? "request_id_donation" : "request_id");
+      }
+    });
+  }
+
+  ///
   @override
   Widget build(BuildContext context) {
     ///
