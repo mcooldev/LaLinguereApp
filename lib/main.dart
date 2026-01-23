@@ -37,8 +37,6 @@ import 'package:la_linguere/services/firebase_services/fcm_service.dart';
 import 'package:la_linguere/services/wp_services/config.dart';
 import 'package:la_linguere/utils/theme/theme_data.dart';
 import 'package:provider/provider.dart';
-import 'package:recaptcha_enterprise_flutter/recaptcha.dart';
-import 'package:recaptcha_enterprise_flutter/recaptcha_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firebase_options.dart';
@@ -51,7 +49,6 @@ final fcm = FcmService.instance;
 ///
 @pragma('vm:entry-point')
 Future<void> fcmMessageHandler(RemoteMessage msg) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //
   log("Message reçu en avant-plan : ${msg.messageId}");
 }
@@ -61,10 +58,11 @@ void notificationTapBackground(NotificationResponse response) {
   log("Notification tap background : ${response.payload}");
 }
 
-///
+/// Main function
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //
   await FirebaseAppCheck.instance.activate(
@@ -78,21 +76,13 @@ void main() async {
   //
   FirebaseMessaging.onBackgroundMessage(fcmMessageHandler);
   //
-  await fcm.initNotification();
-  //
-  final client = await Recaptcha.fetchClient(config.recaptchaSiteKey);
-  //
-  runApp(MyApp(client: client));
-  //
-  Future.delayed(const Duration(milliseconds: 500), () {
-    fcm.initFcm();
-  });
+  runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key, required this.client});
+/// My app class
 
-  final RecaptchaClient client;
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -100,21 +90,32 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ///
- bool? isDonation;
+  bool? isDonation;
+  bool _isInit = false;
+
   @override
   void initState() {
     super.initState();
+    _initApp();
+  }
+
+  Future<void> _initApp() async {
     _removeBadge();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final tokenPayment = prefs.getString("token_payment_donation");
-      final requestIdDonation = prefs.getString("request_id_donation");
-      if (tokenPayment != null && requestIdDonation != null) {
-        setState(() {
-          isDonation = true;
-        });
-      }
+    //
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final tokenPayment = prefs.getString("token_payment_donation");
+    final requestIdDonation = prefs.getString("request_id_donation");
+    if (tokenPayment != null && requestIdDonation != null) {
+      setState(() => isDonation = true);
+    }
+    //
+    await fcm.initNotification();
+    //
+    Future.delayed(const Duration(milliseconds: 500), () {
+      fcm.initFcm();
     });
+    //
+    setState(() => _isInit = true);
   }
 
   Future<void> _removeBadge() async {
@@ -133,12 +134,24 @@ class _MyAppState extends State<MyApp> {
     final appTheme = AppTheme();
 
     ///
+    if (!_isInit) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: appTheme.theme,
+        home: Scaffold(
+          body: Center(
+            child: SizedBox(
+              height: 100,
+              child: Image.asset('assets/ll_splash_icon_transparent.png'),
+            ),
+          ),
+        ),
+      );
+    }
     return MultiProvider(
       providers: [
         //
-        ChangeNotifierProvider(
-          create: (_) => OnBoardingProvider()..setFirstTime(),
-        ),
+        ChangeNotifierProvider(create: (_) => OnBoardingProvider()),
         //
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         //
@@ -163,6 +176,7 @@ class _MyAppState extends State<MyApp> {
         theme: appTheme.theme,
         navigatorKey: navKey,
         routes: {
+          // splash & on boarding
           '/': (_) => const Splash(),
           '/onBoarding': (_) => const OnBoardingScreen(),
           // authentication
@@ -171,15 +185,15 @@ class _MyAppState extends State<MyApp> {
           '/forgetPassword': (_) => const ForgetPassword(),
           '/otpScreen': (_) => const OtpScreen(),
           '/authGate': (_) => const AuthGate(),
-          //
+          // other pages
           '/home': (_) => const Home(),
           '/matches': (_) => const Matches(),
           '/profile': (_) => const Profile(),
           '/support': (_) => const Support(),
           '/foundation': (_) => const Foundation(),
-          //
-          "/success": (_) =>  SuccessPayment(isDonation: isDonation ?? false),
-          "/error": (_) =>  ErrorPayment(isDonation: isDonation ?? false),
+          // success & error payment pages
+          "/success": (_) => SuccessPayment(isDonation: isDonation ?? false),
+          "/error": (_) => ErrorPayment(isDonation: isDonation ?? false),
         },
       ),
     );

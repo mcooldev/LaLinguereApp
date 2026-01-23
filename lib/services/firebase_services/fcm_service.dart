@@ -129,6 +129,7 @@ class FcmService {
           importance: Importance.max,
           priority: Priority.high,
           ticker: 'ticker',
+          channelBypassDnd: true,
         );
     final iosNd = const DarwinNotificationDetails();
     final NotificationDetails notificationDetails = NotificationDetails(

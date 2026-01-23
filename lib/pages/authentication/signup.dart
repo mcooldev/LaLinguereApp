@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:recaptcha_enterprise_flutter/recaptcha.dart';
 
+import '../../main.dart';
 import '../../utils/constants/app_colors.dart';
 
 class Signup extends StatefulWidget {
@@ -16,6 +18,16 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  ///
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Recaptcha.fetchClient(config.recaptchaSiteKey);
+    });
+  }
+
+  ///
   @override
   Widget build(BuildContext context) {
     ///

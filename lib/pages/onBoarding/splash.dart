@@ -13,6 +13,15 @@ class Splash extends StatefulWidget {
 
 class _SplashState extends State<Splash> {
   ///
+  @override
+  void initState() {
+    super.initState();
+    //
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkIfFirstTime(context);
+    });
+  }
+  //
   Future<void> checkIfFirstTime(BuildContext context) async {
     final prov = Provider.of<OnBoardingProvider>(context, listen: false);
     await prov.setFirstTime();
@@ -25,13 +34,6 @@ class _SplashState extends State<Splash> {
         );
       }
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    //
-    checkIfFirstTime(context);
   }
 
   ///
@@ -61,13 +63,13 @@ class _SplashState extends State<Splash> {
           children: [
             // logo image
             SizedBox(
-              height: 120,
+              height: 100,
               child: Image.asset('assets/ll_splash_icon_transparent.png'),
             ),
             const SizedBox(height: 6),
             // logo name
             Text(
-              'Chargement en cours ...',
+              'ASCE La Linguere',
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w500,

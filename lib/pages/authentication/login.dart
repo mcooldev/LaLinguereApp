@@ -3,6 +3,9 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:la_linguere/providers/auth_providers/authentication_provider.dart';
 import 'package:la_linguere/utils/constants/app_colors.dart';
 import 'package:provider/provider.dart';
+import 'package:recaptcha_enterprise_flutter/recaptcha.dart';
+
+import '../../main.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -12,6 +15,16 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  ///
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Recaptcha.fetchClient(config.recaptchaSiteKey);
+    });
+  }
+
+  ///
   @override
   Widget build(BuildContext context) {
     ///
@@ -124,7 +137,9 @@ class _LoginState extends State<Login> {
                             color: blueLinguere,
                             height: 48,
                             elevation: 0,
-                            minWidth: loginProv.isLoading ? 48 : double.infinity,
+                            minWidth: loginProv.isLoading
+                                ? 48
+                                : double.infinity,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(90),
                             ),
