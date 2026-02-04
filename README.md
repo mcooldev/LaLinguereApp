@@ -97,4 +97,4 @@ Toute utilisation commerciale ou redistribution doit être autorisée.
 
 ## 👨‍💻 Développeur
 Développé avec ❤️ en Flutter
-Par [Mouhamadou Coulibaly]
+Par [m.coulibaly@diotali.com]
