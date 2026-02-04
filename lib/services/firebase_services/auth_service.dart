@@ -13,15 +13,12 @@ class AuthService {
 
   final GoogleSignIn gSignIn = GoogleSignIn.instance;
 
-  final _clientId =
-      "1051920178350-o3gg9feq6i5slssgtm5mom011jl6qad4.apps.googleusercontent.com";
   final _serverClientId =
       "1051920178350-0ce0ad2p818bkgbul154j2okr42rib0f.apps.googleusercontent.com";
 
   Future<UserCredential?> signInWithGoogle() async {
     //
     await gSignIn.initialize(
-      clientId: _clientId,
       serverClientId: _serverClientId,
     );
     //

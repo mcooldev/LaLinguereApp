@@ -47,33 +47,37 @@ class _PaymentPageState extends State<PaymentPage> {
                       borderRadius: BorderRadius.circular(90),
                     ),
                     child: Row(
+                      mainAxisSize: MainAxisSize.max,
                       children: [
                         Icon(
                           CupertinoIcons.multiply_circle_fill,
                           color: redLaLinguere,
-                          size: 46,
+                          size: 44,
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 4),
                         Text(
                           "Vous n'êtes pas connecté !",
-                          style: Theme.of(context).textTheme.labelLarge!
+                          style: Theme.of(context).textTheme.labelMedium!
                               .copyWith(
                                 color: bodyText,
                                 fontWeight: FontWeight.w500,
                               ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            navKey.currentState?.pushNamed("/login");
-                          },
-                          child: Text(
-                            "Se connecter",
-                            style: Theme.of(context).textTheme.labelLarge!
-                                .copyWith(
-                                  color: blueLinguere,
-                                  fontWeight: FontWeight.w500,
-                                  decoration: TextDecoration.underline,
-                                ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: () {
+                              navKey.currentState?.pushNamed("/login");
+                            },
+                            child: Text(
+                              "Se connecter",
+                              style: Theme.of(context).textTheme.labelMedium!
+                                  .copyWith(
+                                    color: blueLinguere,
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                            ),
                           ),
                         ),
                       ],
